@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DERMATHECA — Plataforma de Imagen Clínica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════
+   TOKENS
+════════════════════════════════════════ */
+:root {
+  /* Palette */
+  --ink:        #0B1520;
+  --ink-mid:    #1C2B3A;
+  --ink-soft:   #2E4156;
+  --slate:      #64788B;
+  --mist:       #98AFBF;
+  --silver:     #C8D5DF;
+  --smoke:      #E8EEF2;
+  --snow:       #F4F7F9;
+  --white:      #FFFFFF;
+
+  /* Brand accent — teal */
+  --teal:       #0A8C7A;
+  --teal-deep:  #066B5D;
+  --teal-mid:   #3AADA0;
+  --teal-pale:  #D6F0ED;
+  --teal-ghost: #EEF8F7;
+
+  /* Status */
+  --green:      #1A9E6A;
+  --green-pale: #E6F7F1;
+  --amber:      #C47D16;
+  --amber-pale: #FEF3DC;
+  --red:        #C0392B;
+  --red-pale:   #FDECEA;
+  --blue:       #2060C0;
+  --blue-pale:  #E8F0FC;
+  --violet:     #6B42C0;
+  --violet-pale:#F0EBFB;
+
+  /* Layout */
+  --sidebar-w:  272px;
+  --header-h:   60px;
+  --radius:     8px;
+  --radius-sm:  5px;
+  --radius-lg:  14px;
+
+  /* Shadows */
+  --sh-xs: 0 1px 2px rgba(11,21,32,.05);
+  --sh-sm: 0 2px 8px rgba(11,21,32,.08);
+  --sh-md: 0 6px 20px rgba(11,21,32,.10);
+  --sh-lg: 0 16px 48px rgba(11,21,32,.14);
+  --sh-teal: 0 4px 20px rgba(10,140,122,.22);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--snow);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ════════════════════════════════════════
+   SCROLLBAR
+════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--silver); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--mist); }
+
+/* ════════════════════════════════════════
+   LAYOUT
+════════════════════════════════════════ */
+.app { display:flex; height:100vh; }
+
+/* ════════════════════════════════════════
+   SIDEBAR
+════════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Subtle grain texture */
+.sidebar::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none; opacity:0.5;
+}
+
+/* Logo */
+.logo {
+  padding: 22px 22px 18px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  position: relative;
+}
+.logo-wordmark {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px; font-weight: 600; letter-spacing: 2.5px;
+  color: var(--white); text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px;
+  line-height: 1;
+}
+.logo-icon {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal));
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.logo-sub {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px; font-weight: 400; color: var(--mist); letter-spacing: 0.3px; margin-top:7px;
+}
+.logo-img {
+  width: 68px;   /* ajusta según tu diseño */
+  height: 68px;
+  object-fit: contain;
+}
+/* Org switcher */
+.org-switcher {
+  margin: 12px 14px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  cursor: pointer; transition: background .15s;
+  display:flex; align-items:center; gap:10px;
+}
+.org-switcher:hover { background: rgba(255,255,255,.09); }
+.org-avatar {
+  width:28px; height:28px; border-radius:7px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; color:white;
+}
+.org-name { font-size:12.5px; font-weight:600; color:var(--white); }
+.org-role { font-size:10.5px; color:var(--mist); }
+.chevron-down { color:var(--mist); margin-left:auto; }
+
+/* Nav groups */
+.nav-group { padding: 16px 14px 4px; }
+.nav-group-label {
+  font-size: 10px; font-weight:600; letter-spacing:1.2px;
+  color: var(--ink-soft); text-transform:uppercase; padding:0 8px 8px;
+}
+.nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 10px; border-radius:var(--radius-sm);
+  cursor:pointer; color:var(--mist); font-size:13.5px; font-weight:500;
+  transition:all .15s ease; position:relative; user-select:none;
+}
+.nav-item:hover { background:rgba(255,255,255,.07); color:var(--white); }
+.nav-item.active {
+  background: rgba(10,140,122,.22);
+  color: #4CCFBE;
+}
+.nav-item.active::before {
+  content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
+  width:3px; height:60%; background:var(--teal-mid); border-radius:0 2px 2px 0;
+}
+.nav-icon { width:17px; height:17px; flex-shrink:0; opacity:.75; }
+.nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity:1; }
+.nav-pill {
+  margin-left:auto; font-size:10px; font-weight:700;
+  padding:2px 7px; border-radius:10px;
+  background:var(--teal); color:white;
+}
+.nav-pill.amber { background:var(--amber); }
+.nav-pill.red { background:var(--red); }
+
+/* Orgs list */
+.org-item {
+  display:flex; align-items:center; gap:9px;
+  padding:7px 10px; border-radius:var(--radius-sm);
+  cursor:pointer; color:var(--mist); font-size:12.5px; font-weight:500;
+  transition:all .15s;
+}
+.org-item:hover { background:rgba(255,255,255,.06); color:var(--white); }
+.org-item.active { color:#4CCFBE; }
+.org-status { width:6px; height:6px; border-radius:50%; background:var(--mist); margin-left:auto; flex-shrink:0; }
+.org-status.on { background:#34D399; }
+
+/* User */
+.sidebar-footer {
+  margin-top:auto; padding:14px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.user-row {
+  display:flex; align-items:center; gap:10px; padding:8px 10px;
+  border-radius:var(--radius); cursor:pointer; transition:background .15s;
+}
+.user-row:hover { background:rgba(255,255,255,.07); }
+.avatar {
+  width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; color:white; flex-shrink:0;
+  background: linear-gradient(135deg,var(--teal-mid),var(--teal));
+}
+.user-name { font-size:13px; font-weight:600; color:var(--white); }
+.user-meta { font-size:11px; color:var(--mist); display:flex; align-items:center; gap:5px; }
+.expert-chip {
+  display:inline-flex; align-items:center; gap:3px;
+  font-size:9.5px; font-weight:700; letter-spacing:0.3px;
+  color:#4CCFBE; background:rgba(10,140,122,.25);
+  padding:2px 6px; border-radius:3px; text-transform:uppercase;
+}
+
+/* ════════════════════════════════════════
+   MAIN
+════════════════════════════════════════ */
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+
+/* Topbar */
+.topbar {
+  height:var(--header-h); background:var(--white);
+  border-bottom:1px solid var(--smoke);
+  display:flex; align-items:center; padding:0 28px; gap:14px; flex-shrink:0;
+  box-shadow: var(--sh-xs);
+}
+.topbar-left {}
+.page-title {
+  font-size:15px; font-weight:700; color:var(--ink); letter-spacing:-.2px;
+}
+.breadcrumb { font-size:12px; color:var(--mist); }
+.breadcrumb b { color:var(--slate); font-weight:500; }
+.topbar-center { flex:1; max-width:420px; margin:0 auto; }
+.topbar-search {
+  position:relative; width:100%;
+}
+.topbar-search input {
+  width:100%; padding:8px 14px 8px 38px;
+  border:1px solid var(--smoke); border-radius:var(--radius);
+  font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink);
+  background:var(--snow); outline:none; transition:all .15s;
+}
+.topbar-search input:focus { border-color:var(--teal-mid); background:var(--white); box-shadow:0 0 0 3px var(--teal-pale); }
+.topbar-search input::placeholder { color:var(--mist); }
+.topbar-search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--mist); }
+.topbar-right { display:flex; align-items:center; gap:8px; margin-left:auto; }
+
+.btn {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:8px 16px; border-radius:var(--radius-sm);
+  border:none; cursor:pointer;
+  font-family:'Outfit',sans-serif; font-size:13px; font-weight:600;
+  transition:all .15s; white-space:nowrap; line-height:1;
+}
+.btn-primary {
+  background:var(--teal); color:white;
+  box-shadow: 0 2px 6px rgba(10,140,122,.3);
+}
+.btn-primary:hover { background:var(--teal-deep); box-shadow:var(--sh-teal); }
+.btn-outline {
+  background:white; color:var(--ink-mid);
+  border:1px solid var(--smoke);
+}
+.btn-outline:hover { border-color:var(--silver); background:var(--snow); }
+.btn-ghost { background:transparent; color:var(--slate); }
+.btn-ghost:hover { background:var(--snow); color:var(--ink); }
+.btn-sm { padding:6px 12px; font-size:12px; }
+.btn-success { background:var(--green); color:white; }
+.btn-success:hover { filter:brightness(.92); }
+.btn-danger { background:var(--red); color:white; }
+.btn-danger:hover { filter:brightness(.92); }
+
+.icon-btn {
+  width:34px; height:34px; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--white); border:1px solid var(--smoke); color:var(--slate);
+  cursor:pointer; transition:all .15s;
+}
+.icon-btn:hover { border-color:var(--silver); color:var(--ink); background:var(--snow); }
+.notif-dot { position:relative; }
+.notif-dot::after {
+  content:''; position:absolute; top:6px; right:6px;
+  width:7px; height:7px; border-radius:50%;
+  background:var(--red); border:2px solid white;
+}
+
+/* Content */
+.content { flex:1; overflow-y:auto; padding:28px 30px; }
+.view { display:none; animation:fadeUp .22s ease both; }
+.view.active { display:block; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ════════════════════════════════════════
+   CARDS
+════════════════════════════════════════ */
+.card {
+  background:var(--white); border:1px solid var(--smoke);
+  border-radius:var(--radius-lg); box-shadow:var(--sh-xs);
+}
+
+/* ════════════════════════════════════════
+   STATUS BADGES
+════════════════════════════════════════ */
+.badge {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:4px;
+}
+.badge-validated  { background:var(--green-pale); color:var(--green); }
+.badge-pending    { background:var(--amber-pale); color:var(--amber); }
+.badge-review     { background:var(--blue-pale);  color:var(--blue); }
+.badge-none       { background:var(--smoke);      color:var(--slate); }
+.badge-rejected   { background:var(--red-pale);   color:var(--red); }
+
+/* ════════════════════════════════════════
+   TAGS
+════════════════════════════════════════ */
+.tag {
+  display:inline-flex; font-size:11px; font-weight:600;
+  padding:3px 9px; border-radius:3px;
+}
+.tag-teal   { background:var(--teal-ghost); color:var(--teal); }
+.tag-blue   { background:var(--blue-pale);  color:var(--blue); }
+.tag-gray   { background:var(--smoke);      color:var(--slate); }
+.tag-violet { background:var(--violet-pale);color:var(--violet); }
+
+/* ════════════════════════════════════════
+   SECTION HEADERS
+════════════════════════════════════════ */
+.sec-head {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:16px;
+}
+.sec-title {
+  font-size:14.5px; font-weight:700; color:var(--ink); letter-spacing:-.2px;
+}
+.sec-sub { font-size:12px; color:var(--mist); margin-top:1px; }
+
+/* ════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════ */
+.stats-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:26px;
+}
+.stat {
+  background:var(--white); border:1px solid var(--smoke);
+  border-radius:var(--radius-lg); padding:20px; box-shadow:var(--sh-xs);
+  transition:box-shadow .2s, transform .2s;
+  cursor:default;
+}
+.stat:hover { box-shadow:var(--sh-sm); transform:translateY(-1px); }
+.stat-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px; }
+.stat-ico {
+  width:38px; height:38px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+}
+.stat-trend {
+  font-size:11.5px; font-weight:600; display:flex; align-items:center; gap:3px;
+  padding:3px 8px; border-radius:4px;
+}
+.trend-up   { background:var(--green-pale); color:var(--green); }
+.trend-warn { background:var(--amber-pale); color:var(--amber); }
+.trend-neutral { background:var(--smoke); color:var(--slate); }
+.stat-val {
+  font-size:30px; font-weight:700; letter-spacing:-1.5px; line-height:1;
+  margin-bottom:4px;
+}
+.stat-lbl { font-size:12.5px; color:var(--mist); font-weight:500; }
+
+/* Cases grid */
+.cases-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.case-card {
+  background:var(--white); border:1px solid var(--smoke);
+  border-radius:var(--radius-lg); overflow:hidden; cursor:pointer;
+  transition:all .2s ease; box-shadow:var(--sh-xs);
+}
+.case-card:hover {
+  box-shadow:var(--sh-md); border-color:var(--teal-mid);
+  transform:translateY(-3px);
+}
+.case-thumb {
+  height:172px; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+/* Imagen */
+.case-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.2));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 12px;
+}
+.thumb-label { font-size:10.5px; color:rgba(255,255,255,.5); font-weight:500; letter-spacing:.3px; }
+.case-badge { position:absolute; top:10px; left:10px; }
+.case-expert { position:absolute; top:10px; right:10px; }
+.case-expert-chip {
+  display:inline-flex; align-items:center; gap:4px;
+  background:rgba(0,0,0,.55); backdrop-filter:blur(8px);
+  color:#4CCFBE; font-size:10px; font-weight:700;
+  padding:3px 8px; border-radius:4px; letter-spacing:.3px;
+}
+
+.case-body { padding:14px 16px 16px; }
+.case-tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:9px; }
+.case-title { font-size:13.5px; font-weight:600; line-height:1.4; margin-bottom:8px; color:var(--ink); }
+.case-meta-row {
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:11.5px; color:var(--mist);
+}
+.case-meta-left { display:flex; align-items:center; gap:12px; }
+.meta-bit { display:flex; align-items:center; gap:4px; }
+.case-comments { display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--mist); }
+
+/* ════════════════════════════════════════
+   UPLOAD VIEW
+════════════════════════════════════════ */
+.upload-layout { display:grid; grid-template-columns:1fr 300px; gap:22px; max-width:1080px; }
+
+.step-bar { display:flex; align-items:center; margin-bottom:24px; }
+.step-item { display:flex; align-items:center; gap:8px; }
+.step-num {
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; flex-shrink:0;
+}
+.step-active .step-num { background:var(--teal); color:white; }
+.step-done .step-num   { background:var(--green); color:white; }
+.step-idle .step-num   { background:var(--smoke); color:var(--mist); }
+.step-lbl { font-size:12.5px; font-weight:600; }
+.step-active .step-lbl { color:var(--teal); }
+.step-done .step-lbl   { color:var(--green); }
+.step-idle .step-lbl   { color:var(--mist); }
+.step-line { flex:1; height:1.5px; background:var(--smoke); margin:0 14px; }
+.step-line.done { background:var(--green); }
+.step-line.active { background:var(--teal); }
+
+.drop-zone {
+  border:2px dashed var(--silver); border-radius:var(--radius-lg);
+  padding:52px 24px; text-align:center; cursor:pointer;
+  transition:all .2s; background:var(--snow); margin-bottom:22px;
+}
+.drop-zone:hover, .drop-zone.over {
+  border-color:var(--teal); background:var(--teal-ghost);
+}
+.drop-ico { font-size:38px; margin-bottom:12px; }
+.drop-title { font-size:15.5px; font-weight:700; margin-bottom:5px; color:var(--ink); }
+.drop-sub { font-size:13px; color:var(--mist); }
+.drop-formats { margin-top:10px; font-size:11.5px; color:var(--silver); }
+
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+label.lbl { font-size:12px; font-weight:600; color:var(--slate); letter-spacing:.1px; }
+.req { color:var(--teal); }
+
+input[type=text], input[type=number], select, textarea {
+  font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink);
+  background:var(--white); border:1.5px solid var(--smoke);
+  border-radius:var(--radius-sm); padding:9px 12px; outline:none;
+  transition:all .15s; width:100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color:var(--teal-mid); box-shadow:0 0 0 3px var(--teal-pale);
+}
+textarea { resize:vertical; min-height:96px; line-height:1.5; }
+select { cursor:pointer; }
+input::placeholder, textarea::placeholder { color:var(--silver); }
+
+.consent-card {
+  background:var(--teal-ghost); border:1.5px solid var(--teal-pale);
+  border-radius:var(--radius); padding:16px; margin:8px 0;
+}
+.consent-row { display:flex; gap:11px; align-items:flex-start; }
+input[type=checkbox] { width:16px; height:16px; margin-top:2px; accent-color:var(--teal); flex-shrink:0; cursor:pointer; }
+.consent-text { font-size:13px; color:var(--slate); line-height:1.55; }
+.consent-text strong { color:var(--ink); }
+
+.upload-tips .card { padding:20px; }
+.tip-item { display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--smoke); }
+.tip-item:last-child { border:none; padding-bottom:0; }
+.tip-ico { width:30px; height:30px; border-radius:7px; background:var(--teal-ghost); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; }
+.tip-title { font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:2px; }
+.tip-sub { font-size:11.5px; color:var(--mist); line-height:1.4; }
+
+.divider { border:none; border-top:1px solid var(--smoke); margin:20px 0; }
+
+/* ════════════════════════════════════════
+   DETAIL VIEW
+════════════════════════════════════════ */
+.detail-grid { display:grid; grid-template-columns:1fr 360px; gap:20px; }
+
+.viewer {
+  background:#0B1520; border-radius:var(--radius-lg);
+  overflow:hidden; aspect-ratio:4/3; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:18px;
+}
+.viewer-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+}
+.viewer-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 🔥 clave */
+  display: block;
+
+  transition: transform 0.3s ease;
+  cursor: zoom-in;
+}
+.viewer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+  pointer-events: none;
+}
+.viewer:hover .viewer-img {
+  transform: scale(1.05);
+}
+.viewer-placeholder { text-align:center; }
+.viewer-tools {
+  position:absolute; top:12px; right:12px; display:flex; gap:6px;
+}
+.vtool {
+  width:32px; height:32px; background:rgba(255,255,255,.1);
+  backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.14);
+  border-radius:6px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:rgba(255,255,255,.8); font-size:14px; transition:background .15s;
+}
+.vtool:hover { background:rgba(255,255,255,.2); }
+.viewer-info {
+  position:absolute; bottom:12px; left:12px;
+  background:rgba(11,21,32,.75); backdrop-filter:blur(8px);
+  border-radius:5px; padding:4px 10px; font-size:11px; color:#64788B;
+}
+.viewer-anon {
+  position:absolute; bottom:12px; right:12px;
+  background:rgba(10,140,122,.8); backdrop-filter:blur(8px);
+  border-radius:5px; padding:4px 10px; font-size:10.5px; color:white; font-weight:600; letter-spacing:.3px;
+}
+
+.thumb-strip { display:flex; gap:8px; margin-bottom:20px; }
+.thumb-mini {
+  width:58px; height:44px; border-radius:6px; cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid transparent; transition:border-color .15s;
+  overflow:hidden;
+}
+.thumb-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.thumb-mini.active { border-color:var(--teal); }
+
+.meta-card { padding:20px; margin-bottom:14px; }
+.meta-group { margin-bottom:18px; }
+.meta-group:last-child { margin-bottom:0; }
+.meta-group-title {
+  font-size:10px; font-weight:700; letter-spacing:1px; color:var(--mist);
+  text-transform:uppercase; margin-bottom:11px;
+  display:flex; align-items:center; gap:6px;
+}
+.meta-group-title::after { content:''; flex:1; height:1px; background:var(--smoke); }
+.meta-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
+.meta-row:last-child { margin-bottom:0; }
+.meta-k { font-size:12px; color:var(--mist); font-weight:500; }
+.meta-v { font-size:13px; font-weight:600; color:var(--ink); text-align:right; }
+
+.expert-action {
+  background:linear-gradient(135deg,#0E3A35,#0A2D2A);
+  border:1px solid rgba(10,140,122,.3);
+  border-radius:var(--radius); padding:16px; margin-bottom:14px;
+}
+.expert-action h4 { font-size:12.5px; font-weight:700; color:#4CCFBE; margin-bottom:3px; }
+.expert-action p { font-size:12px; color:#64788B; margin-bottom:13px; line-height:1.45; }
+.action-row { display:flex; gap:8px; }
+
+.comment-section { }
+.comment-list { }
+.comment-item { display:flex; gap:12px; padding:15px 0; border-bottom:1px solid var(--smoke); }
+.comment-item:last-child { border-bottom:none; }
+.comment-av { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white; flex-shrink:0; }
+.comment-body { flex:1; min-width:0; }
+.comment-head { display:flex; align-items:center; gap:8px; margin-bottom:5px; flex-wrap:wrap; }
+.comment-author { font-size:13px; font-weight:700; color:var(--ink); }
+.comment-time { font-size:11px; color:var(--mist); }
+.comment-text { font-size:13px; color:var(--slate); line-height:1.55; }
+
+.comment-input {
+  display:flex; gap:10px; align-items:flex-start; margin-top:16px;
+  padding:14px; background:var(--snow); border-radius:var(--radius); border:1.5px solid var(--smoke);
+  transition:border-color .15s;
+}
+.comment-input:focus-within { border-color:var(--teal-mid); }
+.comment-textarea {
+  flex:1; border:none; background:transparent; resize:none;
+  font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink);
+  outline:none; min-height:36px;
+}
+.comment-textarea::placeholder { color:var(--mist); }
+
+.timeline-list { }
+.tl-item { display:flex; gap:12px; padding:9px 0; }
+.tl-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.tl-dot-teal { background:var(--teal); }
+.tl-dot-green { background:var(--green); }
+.tl-dot-gray { background:var(--silver); }
+.tl-action { font-size:12.5px; font-weight:600; color:var(--ink); }
+.tl-who { font-size:11.5px; color:var(--mist); margin-top:1px; }
+
+/* ════════════════════════════════════════
+   SEARCH VIEW
+════════════════════════════════════════ */
+.search-topbar { margin-bottom:20px; }
+.big-search {
+  position:relative; margin-bottom:14px;
+}
+.big-search input {
+  width:100%; padding:12px 16px 12px 46px;
+  border:1.5px solid var(--smoke); border-radius:var(--radius);
+  font-family:'Outfit',sans-serif; font-size:15px; color:var(--ink);
+  background:var(--white); outline:none; box-shadow:var(--sh-sm); transition:all .15s;
+}
+.big-search input:focus { border-color:var(--teal-mid); box-shadow:0 0 0 3px var(--teal-pale); }
+.big-search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--mist); font-size:18px; }
+.filter-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.fsel {
+  padding:7px 12px; border:1.5px solid var(--smoke); border-radius:var(--radius-sm);
+  font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:500;
+  background:var(--white); cursor:pointer; color:var(--slate); outline:none;
+  transition:all .15s;
+}
+.fsel:hover { border-color:var(--silver); }
+.fsel:focus { border-color:var(--teal-mid); }
+.fsel.active { border-color:var(--teal); background:var(--teal-ghost); color:var(--teal); font-weight:600; }
+.results-info { font-size:13px; color:var(--mist); margin-bottom:16px; }
+.results-info strong { color:var(--ink); font-weight:700; }
+
+/* Pagination */
+.pagination { display:flex; justify-content:center; align-items:center; gap:6px; margin-top:26px; }
+.pg-btn {
+  width:34px; height:34px; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:600; cursor:pointer; border:1.5px solid var(--smoke);
+  background:var(--white); color:var(--slate); transition:all .15s;
+}
+.pg-btn:hover { border-color:var(--silver); color:var(--ink); }
+.pg-btn.active { background:var(--teal); border-color:var(--teal); color:white; }
+.pg-btn.wide { width:auto; padding:0 14px; }
+.pg-ellipsis { color:var(--mist); font-size:13px; padding:0 4px; }
+
+/* ════════════════════════════════════════
+   ANALYTICS VIEW
+════════════════════════════════════════ */
+.analytics-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px; }
+.analytics-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; }
+.chart-pad { padding:22px; }
+.chart-title { font-size:14px; font-weight:700; margin-bottom:3px; color:var(--ink); }
+.chart-sub { font-size:12px; color:var(--mist); margin-bottom:20px; }
+
+.bar-chart { display:flex; align-items:flex-end; gap:10px; height:160px; padding-top:12px; }
+.bc-group { display:flex; flex-direction:column; align-items:center; gap:5px; flex:1; }
+.bc-bar { width:100%; border-radius:4px 4px 0 0; transition:opacity .2s; cursor:pointer; min-width:12px; }
+.bc-bar:hover { opacity:.75; }
+.bc-val { font-size:11px; font-weight:700; color:var(--slate); }
+.bc-lbl { font-size:10.5px; color:var(--mist); font-weight:500; white-space:nowrap; }
+
+.donut-section { display:flex; align-items:center; gap:28px; }
+.legend { display:flex; flex-direction:column; gap:9px; }
+.legend-row { display:flex; align-items:center; gap:9px; font-size:12.5px; }
+.legend-swatch { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+.legend-lbl { flex:1; color:var(--slate); font-weight:500; }
+.legend-val { font-weight:700; color:var(--ink); }
+
+.progress-list { }
+.prog-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--smoke); }
+.prog-item:last-child { border-bottom:none; }
+.prog-name { width:160px; flex-shrink:0; font-size:12.5px; font-weight:600; color:var(--ink); }
+.prog-track { flex:1; height:7px; background:var(--smoke); border-radius:4px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:4px; }
+.prog-num { width:30px; text-align:right; font-size:12px; font-weight:700; color:var(--slate); }
+
+.kpi-mini { padding:18px 20px; }
+.kpi-val { font-size:26px; font-weight:700; letter-spacing:-1px; }
+.kpi-lbl { font-size:12px; color:var(--mist); margin-top:2px; }
+
+/* ════════════════════════════════════════
+   MODAL
+════════════════════════════════════════ */
+.overlay {
+  position:fixed; inset:0;
+  background:rgba(11,21,32,.55); backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center;
+  z-index:1000; padding:20px;
+  animation:fadeIn .18s ease;
+}
+.modal {
+  background:var(--white); border-radius:var(--radius-lg);
+  box-shadow:var(--sh-lg); width:100%; max-width:500px;
+  max-height:90vh; overflow-y:auto;
+  animation:slideUp .22s ease;
+}
+@keyframes fadeIn { from{opacity:0}to{opacity:1} }
+@keyframes slideUp { from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1} }
+.modal-header {
+  padding:20px 24px 16px; border-bottom:1px solid var(--smoke);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.modal-title { font-size:16px; font-weight:700; letter-spacing:-.2px; }
+.modal-close {
+  width:28px; height:28px; border-radius:6px; border:none;
+  background:var(--snow); color:var(--mist); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+  transition:all .15s;
+}
+.modal-close:hover { background:var(--smoke); color:var(--ink); }
+.modal-body { padding:20px 24px; }
+.modal-foot { padding:16px 24px; border-top:1px solid var(--smoke); display:flex; justify-content:flex-end; gap:10px; }
+
+.expert-option {
+  display:flex; align-items:center; gap:12px; padding:13px 14px;
+  border:1.5px solid var(--smoke); border-radius:var(--radius); cursor:pointer;
+  transition:all .15s; margin-bottom:10px;
+}
+.expert-option:hover { border-color:var(--teal-mid); background:var(--teal-ghost); }
+.expert-option.selected { border-color:var(--teal); background:var(--teal-ghost); }
+.avail-dot { font-size:11px; font-weight:600; margin-left:auto; }
+.avail-on  { color:var(--green); }
+.avail-off { color:var(--mist); }
+
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+.toast {
+  position:fixed; bottom:24px; right:24px; z-index:2000;
+  background:var(--ink); color:white;
+  padding:13px 18px; border-radius:var(--radius);
+  font-size:13.5px; font-weight:500;
+  display:none; align-items:center; gap:10px;
+  box-shadow:var(--sh-lg); max-width:340px;
+  animation:slideIn .3s ease;
+}
+.toast.show { display:flex; }
+@keyframes slideIn { from{transform:translateX(110%)}to{transform:translateX(0)} }
+.toast-ico { color:#34D399; flex-shrink:0; }
+
+/* ════════════════════════════════════════
+   EMPTY STATE
+════════════════════════════════════════ */
+.empty { text-align:center; padding:60px 20px; }
+.empty-ico { font-size:38px; margin-bottom:12px; }
+.empty-title { font-size:15px; font-weight:700; color:var(--slate); margin-bottom:5px; }
+.empty-sub { font-size:13px; color:var(--mist); }
+
+/* ════════════════════════════════════════
+   MISC HELPERS
+════════════════════════════════════════ */
+.flex { display:flex; }
+.items-center { align-items:center; }
+.gap-8 { gap:8px; }
+.gap-10 { gap:10px; }
+.mt-4 { margin-top:4px; }
+.mt-8 { margin-top:8px; }
+.mt-12 { margin-top:12px; }
+.mt-16 { margin-top:16px; }
+.mt-20 { margin-top:20px; }
+.mb-12 { margin-bottom:12px; }
+.mb-16 { margin-bottom:16px; }
+.ml-auto { margin-left:auto; }
+.text-muted { color:var(--mist); font-size:12.5px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ══════════════════════════════════
+     SIDEBAR
+══════════════════════════════════ -->
+<aside class="sidebar">
+
+  <!-- Logo -->
+  <div class="logo">
+    <div class="logo-wordmark">
+      <div class="logo-icon">
+        <img src="img/propuesta_logo_dermatheca.png" class="logo-img">
+      </div>
+      DERMATHECA
+    </div>
+    <div class="logo-sub">Plataforma de imagen clínica colaborativa</div>
+  </div>
+
+  <!-- Org switcher -->
+  <div class="org-switcher" onclick="showToast('Cambiar organización')">
+    <div class="org-avatar" style="background:linear-gradient(135deg,#0A8C7A,#0E6B5D);">Q</div>
+    <div>
+      <div class="org-name">Quirónsalud Sevilla</div>
+      <div class="org-role">Sevilla · 18 miembros</div>
+    </div>
+    <svg class="chevron-down" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-group">
+    <div class="nav-group-label">Exploración</div>
+
+    <div class="nav-item active" onclick="showView('dashboard',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Panel principal
+    </div>
+
+    <div class="nav-item" onclick="showView('explore',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Explorar casos
+      <span class="nav-pill">147</span>
+    </div>
+
+    <div class="nav-item" onclick="showView('upload',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Subir caso nuevo
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Validación</div>
+
+    <div class="nav-item" onclick="showView('detail',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Ver detalle de caso
+    </div>
+
+    <div class="nav-item" onclick="showToast('Módulo de revisión')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Pendientes de revisión
+      <span class="nav-pill amber">8</span>
+    </div>
+
+    <div class="nav-item" onclick="showToast('Mis validaciones')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Red de expertos
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Datos</div>
+
+    <div class="nav-item" onclick="showView('analytics',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analíticas
+    </div>
+
+    <div class="nav-item" onclick="showToast('Exportar datos')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar dataset
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Organizaciones</div>
+
+    <div class="org-item active">
+      <div class="org-avatar" style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#0A8C7A,#0E6B5D);font-size:9px;">Q</div>
+      Quirónsalud Sevilla
+      <span class="org-status on"></span>
+    </div>
+    <div class="org-item">
+      <div class="org-avatar" style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#2060C0,#154090);font-size:9px;">V</div>
+      H.U. Virgen del Rocío
+      <span class="org-status on"></span>
+    </div>
+    <div class="org-item">
+      <div class="org-avatar" style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#6B42C0,#4A2FA0);font-size:9px;">M</div>
+      H.U. Virgen Macarena
+      <span class="org-status on"></span>
+    </div>
+    <div class="org-item">
+      <div class="org-avatar" style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#C47D16,#9A5E0A);font-size:9px;">U</div>
+      Univ. de Sevilla · Med.
+      <span class="org-status"></span>
+    </div>
+    <div class="org-item">
+      <div class="org-avatar" style="width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#9A1515,#6B0E0E);font-size:9px;">S</div>
+      Clínica Sagrado Corazón
+      <span class="org-status"></span>
+    </div>
+    <div class="org-item" onclick="showToast('Unirse a una organización')">
+      <div style="width:22px;height:22px;border-radius:5px;background:var(--smoke);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--mist);flex-shrink:0;">+</div>
+      <span style="color:var(--ink-soft);font-size:12px;">Añadir organización</span>
+    </div>
+  </div>
+
+  <!-- User -->
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="avatar">DM</div>
+      <div>
+        <div class="user-name">Dra. María Díaz</div>
+        <div class="user-meta">
+          <span class="expert-chip">
+            ★ EXPERTA
+          </span>
+          Dermatología
+        </div>
+      </div>
+      <svg style="margin-left:auto;color:#2E4156;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </div>
+
+</aside>
+
+<!-- ══════════════════════════════════
+     MAIN
+══════════════════════════════════ -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" id="topbar-title">Panel principal</div>
+      <div class="breadcrumb" id="topbar-bc"><b>Quirónsalud Sevilla</b> · Todos los casos</div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="topbar-search">
+        <svg class="topbar-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Buscar casos, patologías, autores...">
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="icon-btn notif-dot" title="Notificaciones">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="icon-btn" title="Ayuda">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <button class="btn btn-primary" onclick="showView('upload',null)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Subir caso
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══════ DASHBOARD ══════ -->
+    <div class="view active" id="view-dashboard">
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-top">
+            <div class="stat-ico" style="background:var(--teal-ghost);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <span class="stat-trend trend-up">↑ +12</span>
+          </div>
+          <div class="stat-val">147</div>
+          <div class="stat-lbl">Casos en repositorio</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <div class="stat-ico" style="background:var(--green-pale);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <span class="stat-trend trend-up">60,5 %</span>
+          </div>
+          <div class="stat-val" style="color:var(--green);">89</div>
+          <div class="stat-lbl">Casos validados</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <div class="stat-ico" style="background:var(--amber-pale);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <span class="stat-trend trend-warn">↑ +8</span>
+          </div>
+          <div class="stat-val" style="color:var(--amber);">34</div>
+          <div class="stat-lbl">Pendientes de revisión</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <div class="stat-ico" style="background:var(--blue-pale);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <span class="stat-trend trend-neutral">Tu org.</span>
+          </div>
+          <div class="stat-val" style="color:var(--blue);">23</div>
+          <div class="stat-lbl">Expertos activos</div>
+        </div>
+      </div>
+
+      <!-- Recent cases -->
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Casos recientes</div>
+          <div class="sec-sub">Últimas incorporaciones al repositorio</div>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-outline btn-sm" onclick="showView('explore',null)">Ver todos</button>
+          <button class="btn btn-primary btn-sm" onclick="showView('upload',null)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Subir caso
+          </button>
+        </div>
+      </div>
+
+      <div class="cases-grid">
+        <!-- Card 1 -->
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#0d2137 0%,#163f61 55%,#1e5e8a 100%);">
+            <img src="img/ISIC_0000001.jpg" alt="Lesión cutánea">
+            <div class="thumb-overlay">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span class="thumb-label">DERMATOLOGÍA · LESIÓN PIGMENTADA</span>
+            </div>
+            <div class="case-badge"><span class="badge badge-validated">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+              Validado
+            </span></div>
+            <div class="case-expert"><span class="case-expert-chip">★ Dr. García</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags">
+              <span class="tag tag-teal">Melanoma</span>
+              <span class="tag tag-violet">Lesión pigmentada</span>
+            </div>
+            <div class="case-title">Lesión pigmentada irregular en zona dorsal con asimetría cromática</div>
+            <div class="case-meta-row">
+              <div class="case-meta-left">
+                <span class="meta-bit text-muted">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  45–54a · M
+                </span>
+                <span class="meta-bit text-muted">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Sevilla
+                </span>
+              </div>
+              <div class="case-comments text-muted">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                4
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#1e0c0c 0%,#4a1010 55%,#6b1c1c 100%);">
+            <img src="img/ISIC_0000004.jpg" alt="Lesión cutánea">
+            <div class="thumb-overlay">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span class="thumb-label">DERMATOLOGÍA · CARCINOMA</span>
+            </div>
+            <div class="case-badge"><span class="badge badge-review">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              En revisión
+            </span></div>
+            <div class="case-expert" style="top:10px;right:10px;">
+              <span style="background:rgba(192,57,43,.75);backdrop-filter:blur(8px);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.3px;">⚡ URGENTE</span>
+            </div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags">
+              <span class="tag tag-teal">Ca. basocelular</span>
+              <span class="tag tag-gray">Área facial</span>
+            </div>
+            <div class="case-title">Carcinoma basocelular nodular en región periorbitaria derecha</div>
+            <div class="case-meta-row">
+              <div class="case-meta-left">
+                <span class="meta-bit text-muted">65–74a · H</span>
+                <span class="meta-bit text-muted">Dos Hermanas</span>
+              </div>
+              <div class="case-comments text-muted"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 7</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#1a1230 0%,#2e1e50 55%,#3f2a6e 100%);">
+            <img src="img/ISIC_0000007.jpg" alt="Lesión cutánea">
+            <div class="thumb-overlay">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span class="thumb-label">DERMATOLOGÍA · ERITRODERMIA</span>
+            </div>
+            <div class="case-badge"><span class="badge badge-pending">Sin validar</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags">
+              <span class="tag tag-teal">Psoriasis</span>
+              <span class="tag tag-violet">Eritrodermia</span>
+            </div>
+            <div class="case-title">Psoriasis eritrodérmica de debut con afectación corporal extensa</div>
+            <div class="case-meta-row">
+              <div class="case-meta-left">
+                <span class="meta-bit text-muted">35–44a · M</span>
+                <span class="meta-bit text-muted">Alcalá de G.</span>
+              </div>
+              <div class="case-comments text-muted"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 2</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#0f1e14 0%,#1a3a22 55%,#274f31 100%);">
+            <img src="img/ISIC_0000057.jpg" alt="Lesión cutánea">
+            <div class="thumb-overlay">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span class="thumb-label">DERMATOLOGÍA · QUERATOSIS</span>
+            </div>
+            <div class="case-badge"><span class="badge badge-validated">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+              Validado
+            </span></div>
+            <div class="case-expert"><span class="case-expert-chip">★ Dra. Romero</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags">
+              <span class="tag tag-teal">Queratosis actínica</span>
+              <span class="tag tag-gray">Fotoexposición</span>
+            </div>
+            <div class="case-title">Múltiples queratosis actínicas confluentes en cuero cabelludo</div>
+            <div class="case-meta-row">
+              <div class="case-meta-left">
+                <span class="meta-bit text-muted">65–74a · H</span>
+                <span class="meta-bit text-muted">Sevilla</span>
+              </div>
+              <div class="case-comments text-muted"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 11</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#1c1505 0%,#3d3010 55%,#5c4818 100%);">
+            <img src="img/ISIC_0000081.jpg" alt="Lesión cutánea">
+            <div class="thumb-overlay">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span class="thumb-label">DERMATOLOGÍA · ECCEMA</span>
+            </div>
+            <div class="case-badge"><span class="badge badge-rejected">Rechazado</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags">
+              <span class="tag tag-teal">Dermatitis atópica</span>
+              <span class="tag tag-gray">Eccema</span>
+            </div>
+            <div class="case-title">Dermatitis atópica grave con liquenificación en pliegues antecubitales</div>
+            <div class="case-meta-row">
+              <div class="case-meta-left">
+                <span class="meta-bit text-muted">15–24a · H</span>
+                <span class="meta-bit text-muted">Utrera</span>
+              </div>
+              <div class="case-comments text-muted"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 3</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#071828 0%,#0d2d46 55%,#144266 100%);">
+            <div class="thumb-overlay">
+              <img src="img/ISIC_0000086.jpg" alt="Lesión cutánea">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span class="thumb-label">DERMATOLOGÍA · NEVUS</span>
+            </div>
+            <div class="case-badge"><span class="badge badge-review">En revisión</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags">
+              <span class="tag tag-teal">Nevus displásico</span>
+              <span class="tag tag-gray">Control anual</span>
+            </div>
+            <div class="case-title">Nevus displásico de alto grado con halo inflamatorio perilesional</div>
+            <div class="case-meta-row">
+              <div class="case-meta-left">
+                <span class="meta-bit text-muted">25–34a · M</span>
+                <span class="meta-bit text-muted">Sevilla</span>
+              </div>
+              <div class="case-comments text-muted"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 6</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ UPLOAD ══════ -->
+    <div class="view" id="view-upload">
+      <div class="step-bar" style="margin-bottom:24px;">
+        <div class="step-item step-active"><div class="step-num">1</div><span class="step-lbl">Imagen</span></div>
+        <div class="step-line active"></div>
+        <div class="step-item step-idle"><div class="step-num">2</div><span class="step-lbl">Datos clínicos</span></div>
+        <div class="step-line"></div>
+        <div class="step-item step-idle"><div class="step-num">3</div><span class="step-lbl">Consentimiento</span></div>
+        <div class="step-line"></div>
+        <div class="step-item step-idle"><div class="step-num">4</div><span class="step-lbl">Publicar</span></div>
+      </div>
+
+      <div class="upload-layout">
+        <!-- Form -->
+        <div>
+          <div class="card" style="padding:24px;">
+            <div style="margin-bottom:22px;">
+              <div class="sec-title" style="margin-bottom:3px;">Nuevo caso clínico</div>
+              <div class="text-muted">Sube una imagen anonimizada y completa los datos para publicarla en el repositorio. Proceso rápido — menos de 30 segundos.</div>
+            </div>
+
+            <!-- Drop zone -->
+            <div class="drop-zone" id="dropZone" onclick="showToast('Seleccionar imagen...')">
+              <div class="drop-ico">🩻</div>
+              <div class="drop-title">Arrastra aquí tu imagen clínica</div>
+              <div class="drop-sub">o haz clic para explorar archivos</div>
+              <div class="drop-formats">JPEG · PNG · DICOM · TIFF · WebP — máx. 50 MB</div>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Title -->
+            <div class="form-group mb-16" style="margin-bottom:16px;">
+              <label class="lbl">Título descriptivo del caso <span class="req">*</span></label>
+              <input type="text" placeholder="Ej: Lesión pigmentada irregular con asimetría en zona dorsal">
+            </div>
+
+            <!-- 2 cols -->
+            <div class="form-grid-2 mb-16" style="margin-bottom:16px;">
+              <div class="form-group">
+                <label class="lbl">Rango de edad <span class="req">*</span></label>
+                <select>
+                  <option value="">Seleccionar...</option>
+                  <option>0–14 años</option><option>15–24 años</option>
+                  <option>25–34 años</option><option selected>35–44 años</option>
+                  <option>45–54 años</option><option>55–64 años</option>
+                  <option>65–74 años</option><option>75+ años</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="lbl">Sexo biológico <span class="req">*</span></label>
+                <select>
+                  <option value="">Seleccionar...</option>
+                  <option selected>Mujer</option>
+                  <option>Hombre</option>
+                  <option>No especificado</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="lbl">Subtipo / Área clínica <span class="req">*</span></label>
+                <select>
+                  <option value="">Seleccionar...</option>
+                  <option selected>Dermatología general</option>
+                  <option>Dermato-oncología</option>
+                  <option>Dermatoscopia</option>
+                  <option>Dermatología pediátrica</option>
+                  <option>Dermatología inflamatoria</option>
+                  <option>Dermatología infecciosa</option>
+                  <option>Cirugía dermatológica</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="lbl">Localidad (provincia de Sevilla)</label>
+                <select>
+                  <option selected>Sevilla capital</option>
+                  <option>Dos Hermanas</option>
+                  <option>Alcalá de Guadaíra</option>
+                  <option>Utrera</option>
+                  <option>Écija</option>
+                  <option>Morón de la Frontera</option>
+                  <option>La Rinconada</option>
+                  <option>Otra localidad</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group" style="margin-bottom:16px;">
+              <label class="lbl">Descripción clínica <span class="req">*</span></label>
+              <textarea placeholder="Describe los hallazgos clínicos, contexto del paciente (anonimizado), hipótesis diagnóstica y cualquier información relevante para la revisión experta..."></textarea>
+            </div>
+
+            <!-- Tags -->
+            <div class="form-group" style="margin-bottom:20px;">
+              <label class="lbl">Etiquetas de patología</label>
+              <input type="text" placeholder="melanoma, nevus atípico, ABCDE positivo (separar con comas)">
+            </div>
+
+            <hr class="divider">
+
+            <!-- Consent -->
+            <div class="consent-card">
+              <div class="consent-row">
+                <input type="checkbox" id="consent" checked>
+                <label for="consent" class="consent-text" style="cursor:pointer;">
+                  Confirmo que el paciente ha otorgado <strong>consentimiento informado</strong> para la publicación educativa de esta imagen, que los datos han sido <strong>debidamente anonimizados</strong> según el RGPD, y que este caso cumple con la <strong>normativa vigente</strong> de protección de datos sanitarios.
+                </label>
+              </div>
+            </div>
+
+            <!-- PDF attach -->
+            <div style="margin-top:10px;border:1.5px dashed var(--silver);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='var(--teal)';this.style.background='var(--teal-ghost)'" onmouseout="this.style.borderColor='var(--silver)';this.style.background='transparent'" onclick="showToast('Seleccionar documento PDF...')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--mist)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--slate);">Adjuntar documento de consentimiento (opcional)</div>
+                <div style="font-size:11.5px;color:var(--mist);">PDF · Máx. 5 MB</div>
+              </div>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--mist)" stroke-width="2" style="margin-left:auto;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+
+            <!-- Actions -->
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:22px;">
+              <button class="btn btn-ghost" onclick="showView('dashboard',null)">← Cancelar</button>
+              <div style="display:flex;gap:10px;">
+                <button class="btn btn-outline" onclick="showToast('Borrador guardado')">Guardar borrador</button>
+                <button class="btn btn-primary" onclick="showToast('✓ Caso publicado en DERMATHECA')">
+                  Publicar caso
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips panel -->
+        <div class="upload-tips">
+          <div class="card" style="padding:20px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:7px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Guía de subida
+            </div>
+            <div class="tip-item">
+              <div class="tip-ico">🔒</div>
+              <div>
+                <div class="tip-title">Anonimización obligatoria</div>
+                <div class="tip-sub">Elimina nombre, NHC, fecha y cualquier dato identificable antes de subir.</div>
+              </div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-ico">🖼️</div>
+              <div>
+                <div class="tip-title">Calidad de imagen</div>
+                <div class="tip-sub">Resolución mínima recomendada: 1024×768px para diagnóstico correcta.</div>
+              </div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-ico">📝</div>
+              <div>
+                <div class="tip-title">Descripción detallada</div>
+                <div class="tip-sub">Una buena descripción clínica acelera la validación experta.</div>
+              </div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-ico">⚡</div>
+              <div>
+                <div class="tip-title">Tiempo medio de validación</div>
+                <div class="tip-sub">Los expertos suelen responder en menos de 48 horas.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:16px 20px;">
+            <div style="font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--mist);text-transform:uppercase;margin-bottom:12px;">Tu actividad</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <span style="font-size:13px;color:var(--slate);">Casos subidos</span>
+              <span style="font-size:15px;font-weight:700;color:var(--ink);">12</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <span style="font-size:13px;color:var(--slate);">Validaciones</span>
+              <span style="font-size:15px;font-weight:700;color:var(--green);">34</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;color:var(--slate);">Comentarios</span>
+              <span style="font-size:15px;font-weight:700;color:var(--blue);">87</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ DETAIL ══════ -->
+    <div class="view" id="view-detail">
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+            <h1 style="font-size:19px;font-weight:700;letter-spacing:-.4px;color:var(--ink);line-height:1.3;">Lesión pigmentada irregular en zona dorsal</h1>
+            <span class="badge badge-validated">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+              Validado
+            </span>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="tag tag-teal">Melanoma</span>
+            <span class="tag tag-violet">Lesión pigmentada</span>
+            <span class="tag tag-gray">ABCDE positivo</span>
+            <span class="tag tag-gray">Dermoscopia</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0;">
+          <button class="btn btn-outline btn-sm" onclick="showToast('Guardado en favoritos')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            Guardar
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="showToast('Enlace copiado')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Compartir
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="showModal('expertModal')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Solicitar revisión experta
+          </button>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <!-- Left -->
+        <div>
+          <!-- Image viewer -->
+          <div class="viewer">
+            <img src="img/ISIC_0000088.jpg" class="viewer-img">
+            <div class="viewer-tools">
+              <div class="vtool" title="Zoom +" onclick="showToast('Zoom +')">+</div>
+              <div class="vtool" title="Zoom -" onclick="showToast('Zoom -')">−</div>
+              <div class="vtool" title="Rotar" onclick="showToast('Rotada 90°')">↺</div>
+              <div class="vtool" title="Medir" onclick="showToast('Herramienta de medición')">⟷</div>
+              <div class="vtool" title="Pantalla completa" onclick="showToast('Pantalla completa')">⛶</div>
+            </div>
+            <div class="viewer-info">JPEG · 2,4 MB · 2048×1536</div>
+            <div class="viewer-anon">🔒 ANONIMIZADO</div>
+          </div>
+
+          <!-- Thumb strip -->
+          <div class="thumb-strip">
+            <div class="thumb-mini active" style="background:linear-gradient(160deg,#0d2137,#1e5e8a);">
+              <img src="img/ISIC_0000088.jpg">
+            </div>
+            <div class="thumb-mini" style="background:linear-gradient(160deg,#1a3a22,#274f31);" onclick="showToast('Imagen 2 seleccionada')">
+              <img src="img/ISIC_0000089.jpg">
+            </div>
+            <div class="thumb-mini" style="background:linear-gradient(160deg,#1e1a10,#3f3520);" onclick="showToast('Imagen 3 seleccionada')">
+              <img src="img/ISIC_0000013.jpg">
+            </div>
+            <div class="thumb-mini" style="background:var(--smoke);border:1.5px dashed var(--silver);" onclick="showToast('Añadir imagen adicional')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--mist)" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+          </div>
+
+          <!-- Comments -->
+          <div class="card" style="padding:22px;">
+            <div class="sec-head" style="margin-bottom:16px;">
+              <div>
+                <div class="sec-title">Discusión clínica</div>
+                <div class="sec-sub">4 comentarios de especialistas</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="showToast('Ordenar comentarios')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                Ordenar
+              </button>
+            </div>
+
+            <div class="comment-list">
+              <div class="comment-item">
+                <div class="comment-av" style="background:linear-gradient(135deg,var(--teal),var(--teal-deep));">AG</div>
+                <div class="comment-body">
+                  <div class="comment-head">
+                    <span class="comment-author">Dr. Andrés García</span>
+                    <span class="expert-chip">★ EXPERTO</span>
+                    <span class="comment-time">hace 1 día</span>
+                  </div>
+                  <p class="comment-text">La asimetría de la lesión y la irregularidad cromática son altamente sugestivas de melanoma. Recomiendo biopsia incisional urgente y estadificación ganglionar. El índice de Breslow será determinante para el manejo quirúrgico posterior.</p>
+                </div>
+              </div>
+
+              <div class="comment-item">
+                <div class="comment-av" style="background:linear-gradient(135deg,#6B42C0,#4A2FA0);">LR</div>
+                <div class="comment-body">
+                  <div class="comment-head">
+                    <span class="comment-author">Dra. Laura Romero</span>
+                    <span class="comment-time">hace 6 horas</span>
+                  </div>
+                  <p class="comment-text">Coincido con el Dr. García. ¿Hay historia de exposición solar crónica o antecedentes familiares de melanoma? El patrón reticular atípico en dermatoscopia sería de utilidad para completar el estudio.</p>
+                </div>
+              </div>
+
+              <div class="comment-item">
+                <div class="comment-av" style="background:linear-gradient(135deg,#C47D16,#9A5E0A);">PM</div>
+                <div class="comment-body">
+                  <div class="comment-head">
+                    <span class="comment-author">Dr. Pablo Muñoz</span>
+                    <span class="comment-time">hace 3 horas</span>
+                  </div>
+                  <p class="comment-text">He subido dermoscopia del mismo caso como imagen adicional. El patrón multicomponente y la regresión central apoyan la hipótesis. Regla ABCDE claramente positiva en todos los criterios.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Input -->
+            <div class="comment-input">
+              <div class="avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0;">DM</div>
+              <textarea class="comment-textarea" placeholder="Escribe tu análisis clínico o consulta..."></textarea>
+              <button class="btn btn-primary btn-sm" onclick="showToast('Comentario publicado')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right metadata -->
+        <div>
+          <!-- Expert actions -->
+          <div class="expert-action">
+            <h4>Acciones de experta verificada</h4>
+            <p>Como experta verificada en Dermatología, puedes validar o rechazar este caso.</p>
+            <div class="action-row">
+              <button class="btn btn-success btn-sm" style="flex:1;justify-content:center;" onclick="showToast('✓ Caso validado correctamente en DERMATHECA')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Aprobar
+              </button>
+              <button class="btn btn-danger btn-sm" style="flex:1;justify-content:center;" onclick="showToast('Caso rechazado')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                Rechazar
+              </button>
+            </div>
+          </div>
+
+          <!-- Meta -->
+          <div class="card meta-card">
+            <div class="meta-group">
+              <div class="meta-group-title">Información clínica</div>
+              <div class="meta-row"><span class="meta-k">Especialidad</span><span class="meta-v">Dermatología</span></div>
+              <div class="meta-row"><span class="meta-k">Patología</span><span class="meta-v">Melanoma (sospecha)</span></div>
+              <div class="meta-row"><span class="meta-k">Rango de edad</span><span class="meta-v">45–54 años</span></div>
+              <div class="meta-row"><span class="meta-k">Sexo biológico</span><span class="meta-v">Mujer</span></div>
+              <div class="meta-row"><span class="meta-k">Localización</span><span class="meta-v">Sevilla, España</span></div>
+              <div class="meta-row"><span class="meta-k">Estado</span>
+                <span class="badge badge-validated" style="font-size:10.5px;padding:3px 8px;">
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+                  Validado
+                </span>
+              </div>
+            </div>
+
+            <div class="meta-group">
+              <div class="meta-group-title">Autor</div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="avatar" style="width:36px;height:36px;font-size:12px;">DM</div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--ink);">Dra. María Díaz</div>
+                  <div style="font-size:12px;color:var(--mist);">Quirónsalud Sevilla · hace 2 días</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="meta-group">
+              <div class="meta-group-title">Historial</div>
+              <div class="timeline-list">
+                <div class="tl-item">
+                  <div class="tl-dot tl-dot-green"></div>
+                  <div><div class="tl-action">Caso validado</div><div class="tl-who">Dr. Andrés García · hace 1 día</div></div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot tl-dot-teal"></div>
+                  <div><div class="tl-action">Revisión experta solicitada</div><div class="tl-who">Dra. María Díaz · hace 2 días</div></div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot tl-dot-gray"></div>
+                  <div><div class="tl-action">Caso publicado en DERMATHECA</div><div class="tl-who">Dra. María Díaz · hace 2 días</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <button class="btn btn-outline btn-sm" style="justify-content:center;" onclick="showToast('Descargando imagen anonimizada...')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Descargar imagen
+              </button>
+              <button class="btn btn-ghost btn-sm" style="justify-content:center;color:var(--red);" onclick="showToast('Solicitar eliminación del caso')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                Solicitar eliminación
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ EXPLORE ══════ -->
+    <div class="view" id="view-explore">
+      <div class="search-topbar">
+        <div class="big-search">
+          <svg class="big-search-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Buscar por patología, descripción clínica, especialidad, localización...">
+        </div>
+        <div class="filter-row" style="margin-bottom:12px;">
+          <select class="fsel"><option>Todas las áreas</option><option>Dermato-oncología</option><option>Dermatoscopia</option><option>Dermatitis inflamatorias</option><option>Dermatología infecciosa</option><option>Cirugía dermatológica</option></select>
+          <select class="fsel"><option>Cualquier edad</option><option>0–24 años</option><option>25–44 años</option><option>45–64 años</option><option>65+ años</option></select>
+          <select class="fsel"><option>Cualquier sexo</option><option>Mujer</option><option>Hombre</option></select>
+          <select class="fsel active">
+            <option>Estado: Todos</option><option selected>Validados</option><option>En revisión</option><option>Sin validar</option><option>Rechazados</option>
+          </select>
+          <select class="fsel"><option>Toda la provincia</option><option>Sevilla capital</option><option>Dos Hermanas</option><option>Alcalá de Guadaíra</option><option>Utrera</option></select>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Filtros restablecidos')">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Limpiar
+          </button>
+        </div>
+        <div class="results-info"><strong>89 casos</strong> encontrados · Filtro activo: <span style="color:var(--teal);font-weight:600;">Validados</span></div>
+      </div>
+
+      <div class="cases-grid">
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#0d2137,#1e5e8a);">
+            <div class="thumb-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="thumb-label">MELANOMA · LESIÓN PIGMENTADA</span></div>
+            <div class="case-badge"><span class="badge badge-validated" style="font-size:10.5px;padding:3px 8px;">Validado</span></div>
+            <div class="case-expert"><span class="case-expert-chip">★ Dr. García</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags"><span class="tag tag-teal">Melanoma</span><span class="tag tag-violet">Lesión pigmentada</span></div>
+            <div class="case-title">Lesión pigmentada irregular en zona dorsal con asimetría cromática</div>
+            <div class="case-meta-row">
+              <span class="meta-bit text-muted">45–54a · M · Sevilla</span>
+              <span class="case-comments text-muted"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#0f1e14,#274f31);">
+            <div class="thumb-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="thumb-label">QUERATOSIS ACTÍNICA</span></div>
+            <div class="case-badge"><span class="badge badge-validated" style="font-size:10.5px;padding:3px 8px;">Validado</span></div>
+            <div class="case-expert"><span class="case-expert-chip">★ Dra. Romero</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags"><span class="tag tag-teal">Queratosis actínica</span><span class="tag tag-gray">Fotoexposición</span></div>
+            <div class="case-title">Múltiples queratosis actínicas confluentes en cuero cabelludo</div>
+            <div class="case-meta-row">
+              <span class="meta-bit text-muted">65–74a · H · Sevilla</span>
+              <span class="case-comments text-muted"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 11</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#1e0c0c,#6b1c1c);">
+            <div class="thumb-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="thumb-label">CA. BASOCELULAR</span></div>
+            <div class="case-badge"><span class="badge badge-validated" style="font-size:10.5px;padding:3px 8px;">Validado</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags"><span class="tag tag-teal">Ca. basocelular</span><span class="tag tag-gray">Área facial</span></div>
+            <div class="case-title">Carcinoma basocelular nodular en región periorbitaria derecha</div>
+            <div class="case-meta-row">
+              <span class="meta-bit text-muted">65–74a · H · Dos Hermanas</span>
+              <span class="case-comments text-muted"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 7</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#1a1230,#3f2a6e);">
+            <div class="thumb-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="thumb-label">PSORIASIS</span></div>
+            <div class="case-badge"><span class="badge badge-validated" style="font-size:10.5px;padding:3px 8px;">Validado</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags"><span class="tag tag-teal">Psoriasis</span><span class="tag tag-violet">En placas</span></div>
+            <div class="case-title">Psoriasis en placas con afectación cuero cabelludo e interglútea</div>
+            <div class="case-meta-row">
+              <span class="meta-bit text-muted">35–44a · M · Alcalá de G.</span>
+              <span class="case-comments text-muted"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 5</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#071828,#144266);">
+            <div class="thumb-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="thumb-label">NEVUS DISPLÁSICO</span></div>
+            <div class="case-badge"><span class="badge badge-validated" style="font-size:10.5px;padding:3px 8px;">Validado</span></div>
+            <div class="case-expert"><span class="case-expert-chip">★ Dr. Muñoz</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags"><span class="tag tag-teal">Nevus displásico</span><span class="tag tag-gray">Dermoscopia</span></div>
+            <div class="case-title">Nevus displásico de alto grado con halo inflamatorio perilesional</div>
+            <div class="case-meta-row">
+              <span class="meta-bit text-muted">25–34a · M · Sevilla</span>
+              <span class="case-comments text-muted"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 6</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="case-card" onclick="showView('detail',null)">
+          <div class="case-thumb" style="background:linear-gradient(160deg,#1c1505,#5c4818);">
+            <div class="thumb-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="thumb-label">DERMATITIS ATÓPICA</span></div>
+            <div class="case-badge"><span class="badge badge-validated" style="font-size:10.5px;padding:3px 8px;">Validado</span></div>
+          </div>
+          <div class="case-body">
+            <div class="case-tags"><span class="tag tag-teal">Dermatitis atópica</span><span class="tag tag-gray">Eccema</span></div>
+            <div class="case-title">Dermatitis atópica grave con liquenificación en pliegues antecubitales</div>
+            <div class="case-meta-row">
+              <span class="meta-bit text-muted">15–24a · H · Utrera</span>
+              <span class="case-comments text-muted"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination">
+        <div class="pg-btn wide" onclick="showToast('Página anterior')">←</div>
+        <div class="pg-btn active">1</div>
+        <div class="pg-btn" onclick="showToast('Página 2')">2</div>
+        <div class="pg-btn" onclick="showToast('Página 3')">3</div>
+        <span class="pg-ellipsis">···</span>
+        <div class="pg-btn" onclick="showToast('Página 15')">15</div>
+        <div class="pg-btn wide" onclick="showToast('Página siguiente')">→</div>
+      </div>
+    </div>
+
+    <!-- ══════ ANALYTICS ══════ -->
+    <div class="view" id="view-analytics">
+      <div style="margin-bottom:24px;display:flex;align-items:flex-end;justify-content:space-between;">
+        <div>
+          <div class="sec-title" style="font-size:17px;">Analíticas del repositorio</div>
+          <div class="sec-sub">DERMATHECA · Quirónsalud Sevilla · Actualizado hoy</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <select class="fsel" style="font-size:12px;"><option>Últimos 6 meses</option><option>Este año</option><option>Todo el historial</option></select>
+          <button class="btn btn-outline btn-sm" onclick="showToast('Exportando informe PDF...')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar informe
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI mini row -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;">
+        <div class="card kpi-mini"><div class="kpi-val" style="color:var(--teal);">147</div><div class="kpi-lbl">Casos totales</div></div>
+        <div class="card kpi-mini"><div class="kpi-val" style="color:var(--green);">89</div><div class="kpi-lbl">Validados</div></div>
+        <div class="card kpi-mini"><div class="kpi-val" style="color:var(--amber);">34</div><div class="kpi-lbl">Pendientes</div></div>
+        <div class="card kpi-mini"><div class="kpi-val" style="color:var(--blue);">23</div><div class="kpi-lbl">Expertos activos</div></div>
+        <div class="card kpi-mini"><div class="kpi-val" style="color:var(--slate);">48h</div><div class="kpi-lbl">Tiempo medio validación</div></div>
+      </div>
+
+      <div class="analytics-grid-2">
+        <!-- Bar chart: monthly -->
+        <div class="card chart-pad">
+          <div class="chart-title">Casos subidos por mes</div>
+          <div class="chart-sub">Nuevas incorporaciones al repositorio</div>
+          <div class="bar-chart">
+            <div class="bc-group"><div class="bc-val">12</div><div class="bc-bar" style="height:52px;background:var(--teal-pale);"></div><div class="bc-lbl">Oct</div></div>
+            <div class="bc-group"><div class="bc-val">18</div><div class="bc-bar" style="height:78px;background:var(--teal-pale);"></div><div class="bc-lbl">Nov</div></div>
+            <div class="bc-group"><div class="bc-val">15</div><div class="bc-bar" style="height:65px;background:var(--teal-pale);"></div><div class="bc-lbl">Dic</div></div>
+            <div class="bc-group"><div class="bc-val">22</div><div class="bc-bar" style="height:95px;background:var(--teal-mid);opacity:.6;"></div><div class="bc-lbl">Ene</div></div>
+            <div class="bc-group"><div class="bc-val">28</div><div class="bc-bar" style="height:121px;background:var(--teal-mid);opacity:.8;"></div><div class="bc-lbl">Feb</div></div>
+            <div class="bc-group"><div class="bc-val">34</div><div class="bc-bar" style="height:147px;background:linear-gradient(to top,var(--teal-deep),var(--teal));"></div><div class="bc-lbl">Mar</div></div>
+          </div>
+        </div>
+
+        <!-- Donut: sex -->
+        <div class="card chart-pad">
+          <div class="chart-title">Distribución por sexo</div>
+          <div class="chart-sub">147 casos totales en el repositorio</div>
+          <div class="donut-section">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle cx="65" cy="65" r="50" fill="none" stroke="var(--smoke)" stroke-width="22"/>
+              <!-- Women 62% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="var(--teal)" stroke-width="22"
+                stroke-dasharray="196 118" stroke-dashoffset="78" stroke-linecap="butt"/>
+              <!-- Men 38% -->
+              <circle cx="65" cy="65" r="50" fill="none" stroke="#5B9BD5" stroke-width="22"
+                stroke-dasharray="118 196" stroke-dashoffset="-118" stroke-linecap="butt"/>
+              <text x="65" y="60" text-anchor="middle" font-family="Outfit,sans-serif" font-size="22" font-weight="700" fill="var(--ink)">147</text>
+              <text x="65" y="78" text-anchor="middle" font-family="Outfit,sans-serif" font-size="11" fill="var(--mist)">pacientes</text>
+            </svg>
+            <div class="legend">
+              <div class="legend-row">
+                <div class="legend-swatch" style="background:var(--teal);"></div>
+                <span class="legend-lbl">Mujer</span>
+                <span class="legend-val">91 <span style="font-weight:400;color:var(--mist);">(62%)</span></span>
+              </div>
+              <div class="legend-row">
+                <div class="legend-swatch" style="background:#5B9BD5;"></div>
+                <span class="legend-lbl">Hombre</span>
+                <span class="legend-val">56 <span style="font-weight:400;color:var(--mist);">(38%)</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analytics-grid-3" style="margin-top:18px;">
+        <!-- Age distribution -->
+        <div class="card chart-pad">
+          <div class="chart-title">Distribución por edad</div>
+          <div class="chart-sub">Grupos de edad de los casos</div>
+          <div class="bar-chart" style="height:120px;">
+            <div class="bc-group"><div class="bc-val" style="font-size:10px;">4</div><div class="bc-bar" style="height:18px;background:var(--teal-pale);"></div><div class="bc-lbl">0–24</div></div>
+            <div class="bc-group"><div class="bc-val" style="font-size:10px;">18</div><div class="bc-bar" style="height:52px;background:var(--teal-mid);opacity:.5;"></div><div class="bc-lbl">25–34</div></div>
+            <div class="bc-group"><div class="bc-val" style="font-size:10px;">26</div><div class="bc-bar" style="height:75px;background:var(--teal-mid);opacity:.7;"></div><div class="bc-lbl">35–44</div></div>
+            <div class="bc-group"><div class="bc-val" style="font-size:10px;">34</div><div class="bc-bar" style="height:97px;background:var(--teal);"></div><div class="bc-lbl">45–54</div></div>
+            <div class="bc-group"><div class="bc-val" style="font-size:10px;">38</div><div class="bc-bar" style="height:109px;background:linear-gradient(to top,var(--teal-deep),var(--teal));"></div><div class="bc-lbl">55–64</div></div>
+            <div class="bc-group"><div class="bc-val" style="font-size:10px;">22</div><div class="bc-bar" style="height:63px;background:var(--teal-mid);opacity:.6;"></div><div class="bc-lbl">65–74</div></div>
+            <div class="bc-group"><div class="bc-val" style="font-size:10px;">5</div><div class="bc-bar" style="height:20px;background:var(--teal-pale);"></div><div class="bc-lbl">75+</div></div>
+          </div>
+        </div>
+
+        <!-- Validation status -->
+        <div class="card chart-pad">
+          <div class="chart-title">Estado de validación</div>
+          <div class="chart-sub">Distribución de los 147 casos</div>
+          <div class="progress-list" style="margin-top:8px;">
+            <div class="prog-item">
+              <div class="prog-name" style="color:var(--green);">● Validados</div>
+              <div class="prog-track"><div class="prog-fill" style="width:60.5%;background:var(--green);"></div></div>
+              <div class="prog-num">89</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name" style="color:var(--amber);">● Sin validar</div>
+              <div class="prog-track"><div class="prog-fill" style="width:23%;background:var(--amber);"></div></div>
+              <div class="prog-num">34</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name" style="color:var(--blue);">● En revisión</div>
+              <div class="prog-track"><div class="prog-fill" style="width:12%;background:var(--blue);"></div></div>
+              <div class="prog-num">18</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name" style="color:var(--red);">● Rechazados</div>
+              <div class="prog-track"><div class="prog-fill" style="width:4%;background:var(--red);"></div></div>
+              <div class="prog-num">6</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top pathologies -->
+        <div class="card chart-pad">
+          <div class="chart-title">Patologías frecuentes</div>
+          <div class="chart-sub">Top 6 en el repositorio</div>
+          <div class="progress-list" style="margin-top:8px;">
+            <div class="prog-item">
+              <div class="prog-name">Melanoma</div>
+              <div class="prog-track"><div class="prog-fill" style="width:78%;background:var(--teal);"></div></div>
+              <div class="prog-num">28</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name">Ca. basocelular</div>
+              <div class="prog-track"><div class="prog-fill" style="width:56%;background:var(--teal-mid);"></div></div>
+              <div class="prog-num">20</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name">Psoriasis</div>
+              <div class="prog-track"><div class="prog-fill" style="width:42%;background:var(--blue);"></div></div>
+              <div class="prog-num">15</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name">Queratosis actínica</div>
+              <div class="prog-track"><div class="prog-fill" style="width:36%;background:var(--violet);"></div></div>
+              <div class="prog-num">13</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name">Dermatitis atópica</div>
+              <div class="prog-track"><div class="prog-fill" style="width:28%;background:var(--amber);"></div></div>
+              <div class="prog-num">10</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name">Ca. espinocelular</div>
+              <div class="prog-track"><div class="prog-fill" style="width:20%;background:var(--red);"></div></div>
+              <div class="prog-num">7</div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-name">Otras</div>
+              <div class="prog-track"><div class="prog-fill" style="width:95%;background:var(--smoke);"></div></div>
+              <div class="prog-num" style="color:var(--mist);">54</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+</div><!-- /app -->
+
+<!-- ══════════════════════════════════
+     MODAL: Expert Review
+══════════════════════════════════ -->
+<div class="overlay" id="expertModal" style="display:none;" onclick="closeModal('expertModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">Solicitar revisión experta</div>
+      <button class="modal-close" onclick="closeModal('expertModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--mist);margin-bottom:18px;line-height:1.55;">Selecciona el experto al que deseas enviar este caso. Recibirá una notificación inmediata en DERMATHECA.</p>
+
+      <div id="exp1" class="expert-option" onclick="selectExpert('exp1')">
+        <div class="avatar" style="width:38px;height:38px;font-size:12px;">AG</div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px;font-weight:700;color:var(--ink);">Dr. Andrés García</div>
+          <div style="font-size:12px;color:var(--mist);margin-top:1px;">Dermato-oncólogo · Quirónsalud Sevilla</div>
+          <span class="expert-chip" style="margin-top:5px;display:inline-flex;">★ EXPERTO VERIFICADO</span>
+        </div>
+        <div class="avail-dot avail-on">● Disponible</div>
+      </div>
+
+      <div id="exp2" class="expert-option" onclick="selectExpert('exp2')">
+        <div class="avatar" style="width:38px;height:38px;font-size:12px;background:linear-gradient(135deg,#6B42C0,#4A2FA0);">LR</div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px;font-weight:700;color:var(--ink);">Dra. Laura Romero</div>
+          <div style="font-size:12px;color:var(--mist);margin-top:1px;">Dermatóloga · H.U. Virgen del Rocío</div>
+          <span class="expert-chip" style="margin-top:5px;display:inline-flex;">★ EXPERTA VERIFICADA</span>
+        </div>
+        <div class="avail-dot avail-off">● Ocupada</div>
+      </div>
+
+      <div id="exp3" class="expert-option" onclick="selectExpert('exp3')">
+        <div class="avatar" style="width:38px;height:38px;font-size:12px;background:linear-gradient(135deg,#C47D16,#9A5E0A);">PM</div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px;font-weight:700;color:var(--ink);">Dr. Pablo Muñoz</div>
+          <div style="font-size:12px;color:var(--mist);margin-top:1px;">Dermatólogo · H.U. Virgen Macarena</div>
+          <span class="expert-chip" style="margin-top:5px;display:inline-flex;">★ EXPERTO VERIFICADO</span>
+        </div>
+        <div class="avail-dot avail-on">● Disponible</div>
+      </div>
+
+      <div class="form-group" style="margin-top:16px;">
+        <label class="lbl">Motivo de la solicitud <span style="color:var(--mist);font-weight:400;">(opcional)</span></label>
+        <textarea placeholder="Describe brevemente por qué solicitas revisión experta para este caso..." style="min-height:72px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('expertModal')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('expertModal');showToast('✓ Solicitud enviada al experto seleccionado')">
+        Enviar solicitud
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg class="toast-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Acción completada</span>
+</div>
+
+<script>
+/* ── VIEW ROUTER ── */
+const viewMeta = {
+  dashboard: { title:'Panel principal',       bc:'<b>Quirónsalud Sevilla</b> · Todos los casos' },
+  upload:    { title:'Subir nuevo caso',      bc:'<b>Casos</b> · Nueva publicación' },
+  detail:    { title:'Detalle de caso',       bc:'<b>Casos</b> · Lesión pigmentada irregular en zona dorsal' },
+  explore:   { title:'Explorar casos',        bc:'<b>DERMATHECA</b> · Repositorio público' },
+  analytics: { title:'Analíticas',            bc:'<b>Quirónsalud Sevilla</b> · Estadísticas del repositorio' },
+};
+
+function showView(name, trigger) {
+  // Hide all
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  // Show target
+  const target = document.getElementById('view-'+name);
+  if (!target) return;
+  target.classList.add('active');
+
+  // Update topbar
+  const m = viewMeta[name];
+  if (m) {
+    document.getElementById('topbar-title').textContent = m.title;
+    document.getElementById('topbar-bc').innerHTML = m.bc;
+  }
+
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (trigger) trigger.classList.add('active');
+}
+
+/* ── MODAL ── */
+function showModal(id) { document.getElementById(id).style.display='flex'; }
+function closeModal(id) { document.getElementById(id).style.display='none'; }
+
+/* ── TOAST ── */
+let toastTmr;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTmr);
+  toastTmr = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ── EXPERT SELECT ── */
+function selectExpert(id) {
+  document.querySelectorAll('.expert-option').forEach(e => e.classList.remove('selected'));
+  document.getElementById(id).classList.add('selected');
+}
+
+/* ── DRAG & DROP ── */
+const dz = document.getElementById('dropZone');
+if (dz) {
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('over');
+    showToast('✓ Imagen cargada correctamente');
+  });
+}
+</script>
+</body>
+</html>

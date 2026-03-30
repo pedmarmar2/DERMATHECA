@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DERMATHECA — Crear cuenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ════════════════ TOKENS ════════════════ */
+:root {
+  --ink:        #0B1520;
+  --ink-mid:    #1C2B3A;
+  --ink-soft:   #2E4156;
+  --slate:      #64788B;
+  --mist:       #98AFBF;
+  --silver:     #C8D5DF;
+  --smoke:      #E8EEF2;
+  --snow:       #F4F7F9;
+  --white:      #FFFFFF;
+
+  --teal:       #0A8C7A;
+  --teal-deep:  #066B5D;
+  --teal-mid:   #3AADA0;
+  --teal-pale:  #D6F0ED;
+  --teal-ghost: #EEF8F7;
+
+  --green:      #1A9E6A;
+  --green-pale: #E6F7F1;
+  --amber:      #C47D16;
+  --amber-pale: #FEF3DC;
+  --red:        #C0392B;
+  --red-pale:   #FDECEA;
+
+  --radius:     8px;
+  --radius-sm:  5px;
+  --radius-lg:  14px;
+  --sh-xs:  0 1px 2px rgba(11,21,32,.05);
+  --sh-sm:  0 2px 8px rgba(11,21,32,.08);
+  --sh-md:  0 8px 24px rgba(11,21,32,.10);
+  --sh-lg:  0 20px 56px rgba(11,21,32,.16);
+  --sh-teal: 0 4px 20px rgba(10,140,122,.25);
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ════════════════ BACKGROUND ════════════════ */
+.bg {
+  position: fixed; inset: 0; z-index: 0;
+  background: var(--ink);
+  overflow: hidden;
+}
+/* Ambient gradient orbs */
+.bg::before {
+  content:'';
+  position:absolute;
+  width:700px; height:700px;
+  background: radial-gradient(circle, rgba(10,140,122,.18) 0%, transparent 70%);
+  top: -200px; right: -100px;
+  animation: drift 18s ease-in-out infinite alternate;
+}
+.bg::after {
+  content:'';
+  position:absolute;
+  width:500px; height:500px;
+  background: radial-gradient(circle, rgba(32,96,192,.12) 0%, transparent 70%);
+  bottom: -100px; left: -80px;
+  animation: drift 22s ease-in-out infinite alternate-reverse;
+}
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(40px,30px) scale(1.08); }
+}
+
+/* Grid lines subtle texture */
+.bg-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ════════════════ LAYOUT ════════════════ */
+.shell {
+  position: relative; z-index: 1;
+  display: flex; min-height: 100vh;
+  height: auto;
+}
+
+/* ════════════════ LEFT PANEL ════════════════ */
+.left-panel {
+  width: 420px; flex-shrink: 0;
+  background: rgba(255,255,255,.03);
+  border-right: 1px solid rgba(255,255,255,.07);
+  display: flex; flex-direction: column;
+  padding: 40px 44px;
+  backdrop-filter: blur(12px);
+}
+
+.brand { margin-bottom: 56px; }
+.brand-mark {
+  display: flex; align-items: center; gap: 11px; margin-bottom: 6px;
+}
+.brand-ico {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--sh-teal);
+}
+.brand-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 24px; font-weight: 600; letter-spacing: 3px;
+  color: var(--white); text-transform: uppercase;
+}
+.brand-tagline { font-size: 12px; color: var(--mist); letter-spacing: .3px; padding-left: 47px; }
+
+/* Value props */
+.props { flex: 1; display: flex; flex-direction: column; gap: 0; }
+.prop-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 34px; font-weight: 600; line-height: 1.2;
+  color: var(--white); margin-bottom: 32px; letter-spacing: -.3px;
+}
+.prop-heading em { color: var(--teal-mid); font-style: italic; }
+
+.prop-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.prop-item:last-child { border-bottom: none; }
+.prop-ico {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+}
+.prop-title { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+.prop-desc { font-size: 12.5px; color: var(--mist); line-height: 1.5; }
+
+/* Trust strip */
+.trust {
+  margin-top: 36px; padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.trust-label { font-size: 11px; color: var(--ink-soft); font-weight: 600; letter-spacing: .8px; text-transform: uppercase; margin-bottom: 14px; }
+.trust-orgs { display: flex; flex-direction: column; gap: 8px; }
+.trust-org {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12.5px; color: var(--slate); font-weight: 500;
+}
+.trust-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+
+/* ════════════════ RIGHT PANEL ════════════════ */
+.right-panel {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 40px 60px;
+  overflow-y: auto;
+}
+
+.form-shell {
+  width: 100%; max-width: 480px;
+}
+
+/* ════════════════ PROGRESS INDICATOR ════════════════ */
+.progress-bar {
+  display: flex; align-items: center; gap: 0; margin-bottom: 40px;
+}
+.prog-step {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11.5px; font-weight: 600; cursor: default;
+}
+.prog-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; flex-shrink: 0;
+  transition: all .3s ease;
+}
+.prog-step.done .prog-num     { background: var(--green); color: white; }
+.prog-step.active .prog-num   { background: var(--teal); color: white; box-shadow: 0 0 0 4px rgba(10,140,122,.25); }
+.prog-step.idle .prog-num     { background: rgba(255,255,255,.08); color: var(--slate); }
+.prog-step.done .prog-lbl     { color: var(--green); }
+.prog-step.active .prog-lbl   { color: var(--white); }
+.prog-step.idle .prog-lbl     { color: var(--slate); }
+.prog-lbl { transition: color .3s; }
+.prog-connector {
+  height: 1.5px; flex: 1; margin: 0 10px;
+  background: rgba(255,255,255,.08);
+  transition: background .4s ease;
+}
+.prog-connector.done { background: var(--green); }
+.prog-connector.active { background: var(--teal); }
+
+/* ════════════════ STEP PANELS ════════════════ */
+.step-panel { display: none; animation: stepIn .28s ease both; }
+.step-panel.active { display: block; }
+@keyframes stepIn {
+  from { opacity:0; transform: translateX(18px); }
+  to   { opacity:1; transform: translateX(0); }
+}
+
+.step-header { margin-bottom: 28px; }
+.step-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--teal-mid); margin-bottom: 8px;
+}
+.step-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px; font-weight: 600; line-height: 1.2;
+  color: var(--white); letter-spacing: -.2px; margin-bottom: 6px;
+}
+.step-sub { font-size: 13.5px; color: var(--mist); line-height: 1.5; }
+
+/* ════════════════ FORM CONTROLS ════════════════ */
+.field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+.field:last-of-type { margin-bottom: 0; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+label {
+  font-size: 12px; font-weight: 600;
+  color: var(--mist); letter-spacing: .1px;
+}
+.req { color: var(--teal-mid); }
+
+.input-wrap { position: relative; }
+.input-ico {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--slate); pointer-events: none;
+}
+.input-ico-right {
+  position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--slate); cursor: pointer; transition: color .15s;
+}
+.input-ico-right:hover { color: var(--mist); }
+
+input[type=text],
+input[type=email],
+input[type=password],
+input[type=number],
+select,
+textarea {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; color: var(--white);
+  background: rgba(255,255,255,.06);
+  border: 1.5px solid rgba(255,255,255,.10);
+  border-radius: var(--radius); padding: 11px 14px; outline: none;
+  transition: all .15s; width: 100%;
+  -webkit-appearance: none;
+}
+input[type=text].has-ico,
+input[type=email].has-ico,
+input[type=password].has-ico { padding-left: 40px; }
+
+input::placeholder, textarea::placeholder { color: var(--slate); }
+select option { background: var(--ink-mid); color: var(--white); }
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--teal-mid);
+  background: rgba(10,140,122,.08);
+  box-shadow: 0 0 0 3px rgba(10,140,122,.15);
+}
+input.error, select.error { border-color: var(--red); }
+.field-hint { font-size: 11.5px; color: var(--slate); }
+.field-error { font-size: 11.5px; color: var(--red); display: none; }
+.field-error.show { display: block; }
+
+/* Password strength */
+.pwd-strength { margin-top: 8px; }
+.pwd-track { height: 3px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden; margin-bottom: 5px; }
+.pwd-fill { height: 100%; border-radius: 2px; transition: width .4s ease, background .4s ease; }
+.pwd-label { font-size: 11px; color: var(--slate); }
+
+/* ════════════════ ROLE SELECTOR ════════════════ */
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+.role-card {
+  border: 1.5px solid rgba(255,255,255,.10);
+  border-radius: var(--radius-lg); padding: 20px 18px;
+  cursor: pointer; transition: all .2s ease; position: relative;
+  background: rgba(255,255,255,.04);
+  user-select: none;
+}
+.role-card:hover { border-color: rgba(58,173,160,.5); background: rgba(10,140,122,.06); }
+.role-card.selected {
+  border-color: var(--teal);
+  background: rgba(10,140,122,.12);
+  box-shadow: 0 0 0 3px rgba(10,140,122,.15);
+}
+.role-card-check {
+  position: absolute; top: 14px; right: 14px;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.role-card.selected .role-card-check {
+  background: var(--teal); border-color: var(--teal);
+}
+.role-ico { font-size: 24px; margin-bottom: 10px; }
+.role-title { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+.role-desc { font-size: 12px; color: var(--mist); line-height: 1.45; }
+.role-chip {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;
+  font-size: 10px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 3px;
+}
+.chip-teal { background: rgba(10,140,122,.3); color: #4CCFBE; }
+.chip-blue { background: rgba(32,96,192,.3); color: #7AACF4; }
+
+/* ════════════════ ORG PICKER ════════════════ */
+.org-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.org-option {
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 16px; border-radius: var(--radius);
+  border: 1.5px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03); cursor: pointer; transition: all .18s;
+}
+.org-option:hover { border-color: rgba(58,173,160,.4); background: rgba(10,140,122,.06); }
+.org-option.selected { border-color: var(--teal); background: rgba(10,140,122,.12); }
+.org-option-ico {
+  width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: white;
+}
+.org-option-name { font-size: 13.5px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+.org-option-meta { font-size: 11.5px; color: var(--mist); }
+.org-option-radio {
+  margin-left: auto; width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.15); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; transition: all .18s;
+}
+.org-option.selected .org-option-radio {
+  background: var(--teal); border-color: var(--teal);
+}
+.org-option.selected .org-option-radio::after {
+  content:''; width:6px; height:6px; border-radius:50%; background: white;
+}
+
+/* ════════════════ VERIFICATION UPLOAD ════════════════ */
+.upload-zone {
+  border: 1.5px dashed rgba(255,255,255,.15); border-radius: var(--radius);
+  padding: 24px; text-align: center; cursor: pointer; transition: all .2s;
+  background: rgba(255,255,255,.03);
+}
+.upload-zone:hover { border-color: var(--teal-mid); background: rgba(10,140,122,.06); }
+.upload-icon { font-size: 24px; margin-bottom: 8px; }
+.upload-title { font-size: 13.5px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+.upload-sub { font-size: 12px; color: var(--mist); }
+
+/* License input group */
+.license-group {
+  display: flex; gap: 10px; align-items: flex-end; margin-bottom: 16px;
+}
+.license-group .field { flex: 1; margin-bottom: 0; }
+.verify-btn {
+  padding: 11px 16px; border-radius: var(--radius-sm); border: none;
+  background: rgba(10,140,122,.2); color: var(--teal-mid);
+  font-family: 'Outfit', sans-serif; font-size: 12.5px; font-weight: 700;
+  cursor: pointer; white-space: nowrap; transition: all .15s; flex-shrink: 0;
+  border: 1.5px solid rgba(10,140,122,.3);
+}
+.verify-btn:hover { background: rgba(10,140,122,.3); border-color: var(--teal-mid); }
+.verify-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; color: var(--green);
+  background: var(--green-pale); padding: 5px 10px; border-radius: 4px;
+  display: none;
+}
+.verify-badge.show { display: inline-flex; }
+
+/* ════════════════ CONSENT ════════════════ */
+.consent-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px; border-radius: var(--radius);
+  background: rgba(255,255,255,.04); border: 1.5px solid rgba(255,255,255,.07);
+  margin-bottom: 10px; cursor: pointer; transition: border-color .15s;
+}
+.consent-item:hover { border-color: rgba(58,173,160,.3); }
+.consent-item.checked { border-color: rgba(10,140,122,.4); background: rgba(10,140,122,.06); }
+input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--teal); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+.consent-text { font-size: 13px; color: var(--mist); line-height: 1.5; }
+.consent-text strong { color: var(--white); }
+.consent-text a { color: var(--teal-mid); text-decoration: none; }
+.consent-text a:hover { text-decoration: underline; }
+
+/* ════════════════ BUTTONS ════════════════ */
+.btn-row { display: flex; gap: 10px; align-items: center; margin-top: 28px; }
+.btn-primary {
+  flex: 1; padding: 13px 24px; border-radius: var(--radius);
+  background: var(--teal); color: white; border: none;
+  font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: var(--sh-teal);
+}
+.btn-primary:hover { background: var(--teal-deep); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(10,140,122,.35); }
+.btn-back {
+  padding: 13px 18px; border-radius: var(--radius);
+  background: rgba(255,255,255,.06); color: var(--mist); border: 1.5px solid rgba(255,255,255,.08);
+  font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 6px;
+}
+.btn-back:hover { background: rgba(255,255,255,.10); color: var(--white); }
+.btn-link {
+  background: none; border: none; color: var(--teal-mid);
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: color .15s; text-decoration: underline; text-underline-offset: 3px;
+}
+.btn-link:hover { color: var(--teal-pale); }
+
+.login-hint { text-align: center; margin-top: 20px; font-size: 13px; color: var(--slate); }
+
+/* ════════════════ DIVIDER ════════════════ */
+.divider {
+  display: flex; align-items: center; gap: 14px; margin: 20px 0;
+}
+.divider::before, .divider::after {
+  content:''; flex:1; height:1px; background: rgba(255,255,255,.08);
+}
+.divider-txt { font-size: 12px; color: var(--slate); white-space: nowrap; }
+
+/* ════════════════ WELCOME STEP ════════════════ */
+.welcome-illo {
+  width: 88px; height: 88px; border-radius: 22px; margin: 0 auto 24px;
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; box-shadow: var(--sh-teal);
+  animation: popIn .5s cubic-bezier(.18,.89,.32,1.28) both;
+}
+@keyframes popIn {
+  from { transform: scale(.5); opacity:0; }
+  to   { transform: scale(1);  opacity:1; }
+}
+.welcome-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 32px; font-weight: 600; text-align: center;
+  color: var(--white); margin-bottom: 8px; letter-spacing: -.3px;
+}
+.welcome-sub { font-size: 14px; color: var(--mist); text-align: center; line-height: 1.6; margin-bottom: 28px; }
+.welcome-items { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.welcome-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px; border-radius: var(--radius);
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+}
+.welcome-item-ico { font-size: 18px; flex-shrink: 0; }
+.welcome-item-txt { font-size: 13px; color: var(--mist); }
+.welcome-item-txt strong { color: var(--white); }
+
+/* ════════════════ INFO BANNER ════════════════ */
+.info-banner {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 13px 15px; border-radius: var(--radius);
+  background: rgba(196,125,22,.12); border: 1px solid rgba(196,125,22,.25);
+  margin-bottom: 16px;
+}
+.info-banner-ico { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.info-banner-txt { font-size: 12.5px; color: rgba(253,200,100,.9); line-height: 1.5; }
+.info-banner-txt strong { color: var(--white); }
+
+.info-teal {
+  background: rgba(10,140,122,.12); border-color: rgba(10,140,122,.25);
+}
+.info-teal .info-banner-txt { color: var(--teal-pale); }
+
+/* ════════════════ SCROLLBAR ════════════════ */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(255,255,255,.12); border-radius:3px; }
+
+/* ════════════════ RESPONSIVE HIDE PANEL ════════════════ */
+@media (max-width: 860px) { .left-panel { display:none; } }
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="bg-grid"></div></div>
+
+<div class="shell">
+
+  <!-- ══════════════════════════════════
+       LEFT PANEL — value prop
+  ══════════════════════════════════ -->
+  <aside class="left-panel">
+    <div class="brand">
+      <div class="brand-mark">
+        <div class="brand-ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="brand-name">DERMATHECA</div>
+      </div>
+      <div class="brand-tagline">Plataforma de imagen dermatológica colaborativa</div>
+    </div>
+
+    <div class="props">
+      <div class="prop-heading">
+        El repositorio clínico que <em>la dermatología sevillana</em> necesitaba.
+      </div>
+
+      <div class="prop-item">
+        <div class="prop-ico">🩺</div>
+        <div>
+          <div class="prop-title">Casos validados por expertos</div>
+          <div class="prop-desc">Cada imagen pasa por revisión de dermatólogos verificados de hospitales y clínicas de Sevilla antes de ser publicada.</div>
+        </div>
+      </div>
+
+      <div class="prop-item">
+        <div class="prop-ico">🔒</div>
+        <div>
+          <div class="prop-title">100% anonimizado · RGPD</div>
+          <div class="prop-desc">Ningún dato identificable abandona tu consulta. Cumplimiento total con la normativa europea de protección de datos sanitarios.</div>
+        </div>
+      </div>
+
+      <div class="prop-item">
+        <div class="prop-ico">🔬</div>
+        <div>
+          <div class="prop-title">Aprendizaje colaborativo</div>
+          <div class="prop-desc">Comenta, discute y aprende de casos reales con una red de dermatólogos de Sevilla. Ideal para residentes y especialistas.</div>
+        </div>
+      </div>
+
+      <div class="prop-item">
+        <div class="prop-ico">📊</div>
+        <div>
+          <div class="prop-title">Analíticas para investigación</div>
+          <div class="prop-desc">Exporta datasets anonimizados para proyectos de investigación, TFM/TFG y estudios epidemiológicos dermatológicos.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trust">
+      <div class="trust-label">Organizaciones colaboradoras</div>
+      <div class="trust-orgs">
+        <div class="trust-org">
+          <div class="trust-dot" style="background:#0A8C7A;"></div>
+          Quirónsalud Sevilla
+        </div>
+        <div class="trust-org">
+          <div class="trust-dot" style="background:#2060C0;"></div>
+          H.U. Virgen del Rocío
+        </div>
+        <div class="trust-org">
+          <div class="trust-dot" style="background:#6B42C0;"></div>
+          H.U. Virgen Macarena
+        </div>
+        <div class="trust-org">
+          <div class="trust-dot" style="background:#C47D16;"></div>
+          Universidad de Sevilla · Medicina
+        </div>
+        <div class="trust-org">
+          <div class="trust-dot" style="background:#9A1515;"></div>
+          Clínica Sagrado Corazón
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════
+       RIGHT PANEL — form
+  ══════════════════════════════════ -->
+  <section class="right-panel">
+    <div class="form-shell">
+
+      <!-- Progress -->
+      <div class="progress-bar" id="progressBar">
+        <div class="prog-step active" id="prog-1">
+          <div class="prog-num">1</div>
+          <span class="prog-lbl">Cuenta</span>
+        </div>
+        <div class="prog-connector" id="conn-1"></div>
+        <div class="prog-step idle" id="prog-2">
+          <div class="prog-num">2</div>
+          <span class="prog-lbl">Perfil</span>
+        </div>
+        <div class="prog-connector" id="conn-2"></div>
+        <div class="prog-step idle" id="prog-3">
+          <div class="prog-num">3</div>
+          <span class="prog-lbl">Verificación</span>
+        </div>
+        <div class="prog-connector" id="conn-3"></div>
+        <div class="prog-step idle" id="prog-4">
+          <div class="prog-num">4</div>
+          <span class="prog-lbl">Organización</span>
+        </div>
+        <div class="prog-connector" id="conn-4"></div>
+        <div class="prog-step idle" id="prog-5">
+          <div class="prog-num">5</div>
+          <span class="prog-lbl">Listo</span>
+        </div>
+      </div>
+
+      <!-- ════ STEP 1: Credenciales ════ -->
+      <div class="step-panel active" id="step-1">
+        <div class="step-header">
+          <div class="step-label">Paso 1 de 4</div>
+          <div class="step-title">Crea tu cuenta</div>
+          <div class="step-sub">Acceso exclusivo para profesionales sanitarios. Tu identidad será verificada antes de activar el perfil.</div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Nombre <span class="req">*</span></label>
+            <input type="text" placeholder="Ana">
+          </div>
+          <div class="field">
+            <label>Apellidos <span class="req">*</span></label>
+            <input type="text" placeholder="García Romero">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Correo profesional <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg class="input-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <input type="email" class="has-ico" placeholder="ana.garcia@quironsalud.es">
+          </div>
+          <span class="field-hint">Usa el correo de tu hospital o clínica para agilizar la verificación.</span>
+        </div>
+
+        <div class="field">
+          <label>Contraseña <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg class="input-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" class="has-ico" id="pwdInput" placeholder="Mínimo 8 caracteres" oninput="updateStrength(this.value)">
+            <span class="input-ico-right" onclick="togglePwd()">
+              <svg id="eyeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+          </div>
+          <div class="pwd-strength">
+            <div class="pwd-track"><div class="pwd-fill" id="pwdFill" style="width:0%;background:var(--red);"></div></div>
+            <div class="pwd-label" id="pwdLabel">Introduce una contraseña</div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-bottom:20px;">
+          <label>Confirmar contraseña <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg class="input-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" class="has-ico" placeholder="Repite la contraseña">
+          </div>
+        </div>
+
+        <div class="divider"><span class="divider-txt">Al continuar aceptas los</span></div>
+        <div style="text-align:center;font-size:12.5px;color:var(--slate);margin-bottom:4px;">
+          <a href="#" style="color:var(--teal-mid);text-decoration:none;">Términos de uso</a> ·
+          <a href="#" style="color:var(--teal-mid);text-decoration:none;">Política de privacidad</a> ·
+          <a href="#" style="color:var(--teal-mid);text-decoration:none;">Uso de datos clínicos</a>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" onclick="goStep(2)">
+            Continuar
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+        <div class="login-hint">
+          ¿Ya tienes cuenta? <button class="btn-link" onclick="alert('Ir a login')">Inicia sesión</button>
+        </div>
+      </div>
+
+      <!-- ════ STEP 2: Perfil profesional ════ -->
+      <div class="step-panel" id="step-2">
+        <div class="step-header">
+          <div class="step-label">Paso 2 de 4</div>
+          <div class="step-title">Tu perfil profesional</div>
+          <div class="step-sub">Estos datos permiten a otros miembros conocer tu especialidad y evaluar tus aportaciones.</div>
+        </div>
+
+        <div class="field">
+          <label>Especialidad principal <span class="req">*</span></label>
+          <select>
+            <option value="">Seleccionar...</option>
+            <option selected>Dermatología</option>
+            <option>Dermatología pediátrica</option>
+            <option>Dermato-oncología</option>
+            <option>Dermatología inflamatoria</option>
+            <option>Dermatología infecciosa</option>
+            <option>Cirugía dermatológica</option>
+            <option>Médico residente (Dermatología)</option>
+            <option>Médico de familia (interés en dermato.)</option>
+          </select>
+        </div>
+
+        <!-- Role selector -->
+        <div class="field" style="margin-bottom:8px;">
+          <label>Tipo de perfil <span class="req">*</span></label>
+        </div>
+        <div class="role-grid" style="margin-bottom:16px;">
+          <div class="role-card" id="role-standard" onclick="selectRole('standard')">
+            <div class="role-card-check" id="check-standard"></div>
+            <div class="role-ico">👨‍⚕️</div>
+            <div class="role-title">Profesional</div>
+            <div class="role-desc">Sube casos, comenta y aprende. Acceso completo al repositorio.</div>
+            <div class="role-chip chip-blue">Acceso estándar</div>
+          </div>
+          <div class="role-card selected" id="role-expert" onclick="selectRole('expert')">
+            <div class="role-card-check" id="check-expert">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="role-ico">🔬</div>
+            <div class="role-title">Experto verificado</div>
+            <div class="role-desc">Valida casos, emite dictámenes y accede a funciones avanzadas.</div>
+            <div class="role-chip chip-teal">★ Requiere acreditación</div>
+          </div>
+        </div>
+
+        <div class="info-banner" id="expertBanner">
+          <div class="info-banner-ico">ℹ️</div>
+          <div class="info-banner-txt">El rol <strong>Experto verificado</strong> requiere aportar tu número de colegiado y una titulación acreditativa en el siguiente paso. El equipo de DERMATHECA revisará tu solicitud en 24–48h.</div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Posición / Cargo</label>
+            <input type="text" placeholder="Ej: Adjunta de Dermatología">
+          </div>
+          <div class="field">
+            <label>Años de experiencia</label>
+            <select>
+              <option>Seleccionar...</option>
+              <option>Residente (R1–R4)</option>
+              <option>Menos de 5 años</option>
+              <option selected>5–10 años</option>
+              <option>10–20 años</option>
+              <option>Más de 20 años</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Áreas de interés clínico <span style="color:var(--slate);font-weight:400;">(opcionales)</span></label>
+          <input type="text" placeholder="melanoma, dermatitis atópica, onco-dermato... (separar con comas)">
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label>Breve presentación <span style="color:var(--slate);font-weight:400;">(opcional)</span></label>
+          <textarea rows="3" placeholder="Cuéntale a la comunidad quién eres y en qué te especializas..."></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(1)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Atrás
+          </button>
+          <button class="btn-primary" onclick="goStep(3)">
+            Continuar
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ════ STEP 3: Verificación ════ -->
+      <div class="step-panel" id="step-3">
+        <div class="step-header">
+          <div class="step-label">Paso 3 de 4</div>
+          <div class="step-title">Verificación profesional</div>
+          <div class="step-sub">Necesitamos confirmar tu identidad como profesional sanitario para garantizar la calidad del repositorio.</div>
+        </div>
+
+        <div class="info-banner info-teal" style="margin-bottom:20px;">
+          <div class="info-banner-ico">🔒</div>
+          <div class="info-banner-txt">Tus datos de colegiación se usan <strong>únicamente para verificar tu identidad</strong> y no serán visibles públicamente en ningún caso.</div>
+        </div>
+
+        <!-- Número de colegiado -->
+        <div class="field" style="margin-bottom:6px;">
+          <label>Número de colegiado (OMC) <span class="req">*</span></label>
+        </div>
+        <div class="license-group">
+          <div class="field">
+            <select style="margin-bottom:0;">
+              <option>Colegio de Sevilla — 41/XXXXX</option>
+              <option>Otro colegio provincial</option>
+            </select>
+          </div>
+          <div class="field">
+            <input type="text" placeholder="41 / 12345" id="licenseInput">
+          </div>
+          <button class="verify-btn" onclick="simulateVerify()">Verificar</button>
+        </div>
+        <div class="verify-badge" id="verifyBadge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Colegiado verificado
+        </div>
+
+        <div style="height:18px;"></div>
+
+        <div class="field">
+          <label>Titulación / Especialidad acreditada <span class="req">*</span></label>
+          <select>
+            <option value="">Seleccionar titulación...</option>
+            <option selected>Especialista en Dermatología Médico-Quirúrgica y Venereología (MIR)</option>
+            <option>Diploma de Especialización en Dermato-Oncología</option>
+            <option>Máster en Dermatología Clínica</option>
+            <option>Licenciado/Grado en Medicina (con ejercicio en dermato.)</option>
+            <option>Otro (especificar en nota)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Centro de trabajo actual <span class="req">*</span></label>
+          <input type="text" placeholder="Ej: Quirónsalud Sevilla — Servicio de Dermatología">
+        </div>
+
+        <!-- Document upload -->
+        <div class="field" style="margin-bottom:8px;">
+          <label>Documento acreditativo <span style="color:var(--slate);font-weight:400;">(recomendado)</span></label>
+        </div>
+        <div class="upload-zone" onclick="simulateUpload()">
+          <div class="upload-icon">📄</div>
+          <div class="upload-title">Sube tu título o acreditación</div>
+          <div class="upload-sub">PDF, JPG o PNG · Máx. 5 MB · Se revisará en privado</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--slate);margin-top:8px;">Si no tienes el documento a mano puedes saltarte este paso y aportarlo después desde tu perfil.</div>
+
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(2)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Atrás
+          </button>
+          <button class="btn-primary" onclick="goStep(4)">
+            Continuar
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ════ STEP 4: Organización ════ -->
+      <div class="step-panel" id="step-4">
+        <div class="step-header">
+          <div class="step-label">Paso 4 de 4</div>
+          <div class="step-title">Únete a tu organización</div>
+          <div class="step-sub">Selecciona el hospital, clínica o universidad donde ejerces. Podrás cambiar esto después o pertenecer a varias organizaciones.</div>
+        </div>
+
+        <div class="org-list">
+          <div class="org-option selected" id="org-q" onclick="selectOrg('org-q')">
+            <div class="org-option-ico" style="background:linear-gradient(135deg,#0A8C7A,#066B5D);">Q</div>
+            <div>
+              <div class="org-option-name">Quirónsalud Sevilla</div>
+              <div class="org-option-meta">Clínica privada · Dermatología · 18 miembros activos</div>
+            </div>
+            <div class="org-option-radio">
+              <div style="width:6px;height:6px;border-radius:50%;background:white;"></div>
+            </div>
+          </div>
+
+          <div class="org-option" id="org-vr" onclick="selectOrg('org-vr')">
+            <div class="org-option-ico" style="background:linear-gradient(135deg,#2060C0,#154090);">V</div>
+            <div>
+              <div class="org-option-name">H.U. Virgen del Rocío</div>
+              <div class="org-option-meta">Hospital público universitario · Dermatología · 34 miembros</div>
+            </div>
+            <div class="org-option-radio"></div>
+          </div>
+
+          <div class="org-option" id="org-vm" onclick="selectOrg('org-vm')">
+            <div class="org-option-ico" style="background:linear-gradient(135deg,#6B42C0,#4A2FA0);">M</div>
+            <div>
+              <div class="org-option-name">H.U. Virgen Macarena</div>
+              <div class="org-option-meta">Hospital público universitario · Dermatología · 27 miembros</div>
+            </div>
+            <div class="org-option-radio"></div>
+          </div>
+
+          <div class="org-option" id="org-us" onclick="selectOrg('org-us')">
+            <div class="org-option-ico" style="background:linear-gradient(135deg,#C47D16,#9A5E0A);">U</div>
+            <div>
+              <div class="org-option-name">Universidad de Sevilla · Medicina</div>
+              <div class="org-option-meta">Facultad de Medicina · Docencia e investigación · 41 miembros</div>
+            </div>
+            <div class="org-option-radio"></div>
+          </div>
+
+          <div class="org-option" id="org-sc" onclick="selectOrg('org-sc')">
+            <div class="org-option-ico" style="background:linear-gradient(135deg,#9A1515,#6B0E0E);">S</div>
+            <div>
+              <div class="org-option-name">Clínica Sagrado Corazón</div>
+              <div class="org-option-meta">Clínica privada · Sevilla · 12 miembros activos</div>
+            </div>
+            <div class="org-option-radio"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:var(--radius);background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.10);cursor:pointer;margin-top:4px;" onclick="alert('Solicitar nueva organización')">
+          <span style="font-size:18px;">＋</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--white);">Mi organización no está en la lista</div>
+            <div style="font-size:11.5px;color:var(--mist);">Solicita que añadamos tu hospital o clínica</div>
+          </div>
+        </div>
+
+        <div style="height:14px;"></div>
+
+        <!-- Consent checks -->
+        <div class="consent-item" id="ci-1" onclick="toggleConsent('ci-1','cb-1')">
+          <input type="checkbox" id="cb-1" checked>
+          <div class="consent-text">
+            Confirmo que soy profesional sanitario en activo y que los datos de mi perfil son verídicos. Entiendo que la suplantación de identidad profesional conlleva la <strong>eliminación inmediata de la cuenta</strong>.
+          </div>
+        </div>
+
+        <div class="consent-item" id="ci-2" onclick="toggleConsent('ci-2','cb-2')">
+          <input type="checkbox" id="cb-2" checked>
+          <div class="consent-text">
+            Acepto que los casos que suba serán revisados por el equipo de DERMATHECA y que me comprometo a <strong>anonimizar correctamente</strong> toda la información clínica según el RGPD y la Ley 3/2018.
+          </div>
+        </div>
+
+        <div class="consent-item" id="ci-3" onclick="toggleConsent('ci-3','cb-3')">
+          <input type="checkbox" id="cb-3">
+          <div class="consent-text">
+            Acepto recibir comunicaciones de la plataforma y de mi organización (resumen semanal, notificaciones de validación, etc.). Puedes darte de baja en cualquier momento. <a href="#">Política de comunicaciones</a>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(3)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Atrás
+          </button>
+          <button class="btn-primary" onclick="goStep(5)">
+            Crear mi cuenta
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ════ STEP 5: Welcome ════ -->
+      <div class="step-panel" id="step-5">
+        <!-- Hide progress -->
+        <div class="welcome-illo">🎉</div>
+        <div class="welcome-title">¡Bienvenida a DERMATHECA!</div>
+        <div class="welcome-sub">Tu cuenta ha sido creada. En las próximas <strong style="color:var(--white);">24–48 horas</strong> el equipo verificará tu perfil de experta y recibirás un correo de confirmación.</div>
+
+        <div class="welcome-items">
+          <div class="welcome-item">
+            <div class="welcome-item-ico">🏥</div>
+            <div class="welcome-item-txt">Organización: <strong>Quirónsalud Sevilla</strong> — pendiente de aprobación del administrador.</div>
+          </div>
+          <div class="welcome-item">
+            <div class="welcome-item-ico">⭐</div>
+            <div class="welcome-item-txt">Rol solicitado: <strong>Experta verificada en Dermatología</strong> — revisión en curso.</div>
+          </div>
+          <div class="welcome-item">
+            <div class="welcome-item-ico">📧</div>
+            <div class="welcome-item-txt">Hemos enviado un correo de confirmación a <strong>ana.garcia@quironsalud.es</strong>.</div>
+          </div>
+        </div>
+
+        <div class="info-banner info-teal">
+          <div class="info-banner-ico">💡</div>
+          <div class="info-banner-txt">Mientras tanto, ya puedes <strong>explorar el repositorio público</strong> y familiarizarte con la plataforma. La subida de casos y la validación se activarán tras la verificación.</div>
+        </div>
+
+        <button class="btn-primary" style="margin-top:24px;width:100%;" onclick="alert('Ir al panel principal de DERMATHECA')">
+          Ir al panel principal
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+
+        <div class="login-hint" style="margin-top:16px;">
+          ¿Tienes algún problema? <button class="btn-link" onclick="alert('Abrir soporte')">Contacta con soporte</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<script>
+/* ── STEP NAVIGATION ── */
+const TOTAL = 5;
+let current = 1;
+
+function goStep(n) {
+  // Hide current
+  document.getElementById('step-' + current).classList.remove('active');
+  // Update progress indicators
+  for (let i = 1; i <= TOTAL; i++) {
+    const prog = document.getElementById('prog-' + i);
+    if (!prog) continue;
+    prog.classList.remove('active','done','idle');
+    if (i < n)      prog.classList.add('done');
+    else if (i === n) prog.classList.add('active');
+    else            prog.classList.add('idle');
+    // Num icon for done
+    const numEl = prog.querySelector('.prog-num');
+    if (i < n) {
+      numEl.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+    } else {
+      numEl.textContent = i;
+    }
+  }
+  // Update connectors
+  for (let i = 1; i <= TOTAL - 1; i++) {
+    const conn = document.getElementById('conn-' + i);
+    if (!conn) continue;
+    conn.classList.remove('done','active');
+    if (i < n - 1)    conn.classList.add('done');
+    else if (i === n - 1) conn.classList.add('active');
+  }
+
+  // Hide progress bar on welcome step
+  document.getElementById('progressBar').style.opacity = n === 5 ? '0' : '1';
+  document.getElementById('progressBar').style.height  = n === 5 ? '0' : '';
+  document.getElementById('progressBar').style.marginBottom = n === 5 ? '0' : '';
+  document.getElementById('progressBar').style.overflow = n === 5 ? 'hidden' : '';
+
+  current = n;
+  document.getElementById('step-' + n).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ── PASSWORD STRENGTH ── */
+function updateStrength(val) {
+  const fill  = document.getElementById('pwdFill');
+  const label = document.getElementById('pwdLabel');
+  let pct=0, color='var(--red)', txt='Muy débil';
+  if (val.length >= 5)  { pct=25; color='var(--red)';   txt='Débil'; }
+  if (val.length >= 8)  { pct=50; color='var(--amber)';  txt='Aceptable'; }
+  if (val.length >= 10 && /[A-Z]/.test(val)) { pct=75; color='var(--teal-mid)'; txt='Buena'; }
+  if (val.length >= 12 && /[A-Z]/.test(val) && /[0-9!@#$%]/.test(val)) { pct=100; color='var(--green)'; txt='Excelente'; }
+  if (!val.length) { pct=0; txt='Introduce una contraseña'; }
+  fill.style.width = pct+'%';
+  fill.style.background = color;
+  label.textContent = txt;
+  label.style.color = pct ? color : 'var(--slate)';
+}
+
+function togglePwd() {
+  const inp = document.getElementById('pwdInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+/* ── ROLE SELECTOR ── */
+function selectRole(role) {
+  ['standard','expert'].forEach(r => {
+    const card  = document.getElementById('role-'+r);
+    const check = document.getElementById('check-'+r);
+    card.classList.remove('selected');
+    check.innerHTML = '';
+  });
+  document.getElementById('role-'+role).classList.add('selected');
+  document.getElementById('check-'+role).innerHTML =
+    `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+  document.getElementById('expertBanner').style.display = role === 'expert' ? 'flex' : 'none';
+}
+
+/* ── ORG SELECTOR ── */
+function selectOrg(id) {
+  document.querySelectorAll('.org-option').forEach(el => {
+    el.classList.remove('selected');
+    el.querySelector('.org-option-radio').innerHTML = '';
+  });
+  const chosen = document.getElementById(id);
+  chosen.classList.add('selected');
+  chosen.querySelector('.org-option-radio').innerHTML =
+    `<div style="width:6px;height:6px;border-radius:50%;background:white;"></div>`;
+}
+
+/* ── CONSENT TOGGLE ── */
+function toggleConsent(itemId, cbId) {
+  const cb = document.getElementById(cbId);
+  cb.checked = !cb.checked;
+  document.getElementById(itemId).classList.toggle('checked', cb.checked);
+}
+// Init checked state
+document.querySelectorAll('.consent-item').forEach(item => {
+  const cb = item.querySelector('input[type=checkbox]');
+  if (cb && cb.checked) item.classList.add('checked');
+});
+
+/* ── VERIFY SIMULATION ── */
+function simulateVerify() {
+  const input = document.getElementById('licenseInput');
+  const badge = document.getElementById('verifyBadge');
+  if (!input.value.trim()) {
+    input.style.borderColor = 'var(--red)';
+    setTimeout(() => input.style.borderColor = '', 1200);
+    return;
+  }
+  badge.classList.add('show');
+  input.style.borderColor = 'var(--green)';
+}
+
+/* ── UPLOAD SIMULATION ── */
+function simulateUpload() {
+  const zone = event.currentTarget;
+  zone.innerHTML = `<div class="upload-icon">✅</div><div class="upload-title">acreditacion_dermato.pdf</div><div class="upload-sub">Subido correctamente · 1,2 MB</div>`;
+  zone.style.borderColor = 'var(--teal)';
+  zone.style.background  = 'rgba(10,140,122,.08)';
+}
+</script>
+</body>
+</html>
