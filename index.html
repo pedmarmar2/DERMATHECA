@@ -1,11 +1,455 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=dermatheca.html">
-  <title>Redirigiendo...</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DERMATHECA — Demo interactiva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:        #0B1520;
+  --ink-mid:    #1C2B3A;
+  --ink-soft:   #2E4156;
+  --slate:      #64788B;
+  --mist:       #98AFBF;
+  --silver:     #C8D5DF;
+  --smoke:      #E8EEF2;
+  --snow:       #F4F7F9;
+  --white:      #FFFFFF;
+  --teal:       #0A8C7A;
+  --teal-deep:  #066B5D;
+  --teal-mid:   #3AADA0;
+  --teal-pale:  #D6F0ED;
+  --teal-ghost: #EEF8F7;
+  --radius:     8px;
+  --radius-sm:  5px;
+  --radius-lg:  14px;
+  --sh-teal:    0 4px 20px rgba(10,140,122,.25);
+  --sh-lg:      0 20px 56px rgba(11,21,32,.35);
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+.bg {
+  position: fixed; inset: 0; z-index: 0;
+  background: var(--ink);
+  overflow: hidden;
+}
+.bg::before {
+  content:'';
+  position:absolute;
+  width:800px; height:800px;
+  background: radial-gradient(circle, rgba(10,140,122,.15) 0%, transparent 70%);
+  top: -250px; right: -150px;
+  animation: drift 20s ease-in-out infinite alternate;
+}
+.bg::after {
+  content:'';
+  position:absolute;
+  width:600px; height:600px;
+  background: radial-gradient(circle, rgba(32,96,192,.10) 0%, transparent 70%);
+  bottom: -150px; left: -100px;
+  animation: drift 26s ease-in-out infinite alternate-reverse;
+}
+.bg-orb3 {
+  position:absolute;
+  width:400px; height:400px;
+  background: radial-gradient(circle, rgba(10,140,122,.08) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  animation: drift 32s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(40px,30px) scale(1.08); }
+}
+.bg-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.bg-grain {
+  position:absolute; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; opacity:.4;
+}
+
+/* ── SHELL ── */
+.shell {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 48px 24px;
+}
+
+/* ── DEMO BADGE ── */
+.demo-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(10,140,122,.15);
+  border: 1px solid rgba(10,140,122,.35);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+  color: #4CCFBE; text-transform: uppercase;
+  margin-bottom: 32px;
+  animation: fadeDown .6s ease both;
+}
+.badge-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #4CCFBE;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.5; transform:scale(.85); }
+}
+
+/* ── LOGO AREA ── */
+.logo-area {
+  text-align: center;
+  margin-bottom: 16px;
+  animation: fadeDown .7s ease .05s both;
+}
+.logo-lockup {
+  display: inline-flex; align-items: center; gap: 16px;
+  margin-bottom: 14px;
+}
+.logo-icon {
+  width: 108px;
+  height: 108px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-icon svg { opacity: .9; }
+.logo-wordmark {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 46px; font-weight: 600; letter-spacing: 6px;
+  color: var(--white); text-transform: uppercase; line-height: 1;
+}
+.logo-sub {
+  font-size: 13px; font-weight: 400; color: var(--mist);
+  letter-spacing: .3px; line-height: 1.5;
+}
+
+/* ── INTRO TEXT ── */
+.intro {
+  text-align: center;
+  max-width: 540px;
+  margin: 0 auto 52px;
+  animation: fadeDown .7s ease .1s both;
+}
+.intro p {
+  font-size: 15px; color: var(--slate); line-height: 1.65;
+}
+.intro p strong { color: var(--mist); font-weight: 600; }
+
+/* ── CARDS ROW ── */
+.cards-row {
+  display: flex; gap: 24px; align-items: stretch;
+  animation: fadeUp .8s ease .2s both;
+}
+
+@media (max-width: 640px) {
+  .cards-row { flex-direction: column; }
+  .logo-wordmark { font-size: 32px; }
+  .logo-lockup { gap: 12px; }
+}
+
+.demo-card {
+  width: 300px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 18px;
+  padding: 32px 28px 28px;
+  cursor: pointer;
+  text-decoration: none; color: inherit;
+  display: flex; flex-direction: column;
+  transition: all .25s ease;
+  position: relative; overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+.demo-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.demo-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(58,173,160,.4);
+  box-shadow: 0 24px 56px rgba(0,0,0,.3), 0 0 0 1px rgba(58,173,160,.15);
+}
+.demo-card.primary:hover {
+  border-color: rgba(10,140,122,.5);
+  box-shadow: 0 24px 56px rgba(0,0,0,.3), var(--sh-teal);
+}
+
+.card-icon-wrap {
+  width: 52px; height: 52px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; flex-shrink: 0;
+}
+.card-icon-wrap.teal {
+  background: linear-gradient(135deg, rgba(10,140,122,.25), rgba(10,140,122,.12));
+  border: 1px solid rgba(10,140,122,.3);
+}
+.card-icon-wrap.slate {
+  background: linear-gradient(135deg, rgba(100,120,139,.2), rgba(100,120,139,.08));
+  border: 1px solid rgba(100,120,139,.25);
+}
+
+.card-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.card-label.teal { color: #4CCFBE; }
+.card-label.slate { color: var(--slate); }
+
+.card-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px; font-weight: 600; letter-spacing: .5px;
+  color: var(--white); line-height: 1.2; margin-bottom: 10px;
+}
+.card-desc {
+  font-size: 13px; color: var(--mist); line-height: 1.55;
+  flex: 1;
+}
+
+.card-features {
+  margin-top: 20px; display: flex; flex-direction: column; gap: 7px;
+}
+.card-feat {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--slate);
+}
+.feat-dot {
+  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+}
+.feat-dot.teal { background: var(--teal-mid); }
+.feat-dot.slate { background: var(--ink-soft); }
+
+.card-cta {
+  margin-top: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.cta-text {
+  font-size: 13px; font-weight: 600;
+}
+.cta-text.teal { color: #4CCFBE; }
+.cta-text.slate { color: var(--mist); }
+
+.cta-arrow {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.cta-arrow.teal {
+  background: rgba(10,140,122,.2); color: #4CCFBE;
+}
+.cta-arrow.slate {
+  background: rgba(255,255,255,.06); color: var(--mist);
+}
+.demo-card:hover .cta-arrow { transform: translateX(3px); }
+.demo-card.primary:hover .cta-arrow.teal { background: rgba(10,140,122,.35); }
+
+/* Divider */
+.or-divider {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; color: var(--ink-soft); font-size: 12px;
+  font-weight: 600; letter-spacing: .5px;
+  animation: fadeDown .7s ease .15s both;
+}
+.or-divider::before, .or-divider::after {
+  content: '';
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,.08), transparent);
+}
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 52px;
+  text-align: center;
+  animation: fadeUp .8s ease .3s both;
+}
+.footer-text {
+  font-size: 12px; color: var(--ink-soft);
+}
+.footer-text a {
+  color: var(--slate); text-decoration: none;
+  transition: color .15s;
+}
+.footer-text a:hover { color: var(--mist); }
+.footer-tags {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; margin-top: 12px;
+}
+.footer-tag {
+  font-size: 10.5px; font-weight: 600; letter-spacing: .3px;
+  color: var(--ink-soft);
+  padding: 3px 10px; border-radius: 4px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+</style>
 </head>
 <body>
-  <p>Si no eres redirigido automáticamente, <a href="dermatheca.html">haz clic aquí</a>.</p>
+
+<!-- Background -->
+<div class="bg">
+  <div class="bg-grid"></div>
+  <div class="bg-orb3"></div>
+  <div class="bg-grain"></div>
+</div>
+
+<!-- Main -->
+<div class="shell">
+
+  <!-- Demo badge -->
+  <div class="demo-badge">
+    <div class="badge-dot"></div>
+    Entorno de demostración · Prototipo interactivo
+  </div>
+
+  <!-- Logo -->
+  <div class="logo-area">
+    <div class="logo-lockup">
+      <div class="logo-icon">
+        <img src="img/propuesta_logo_dermatheca.png" alt="Logo Dermatheca" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="logo-wordmark">Dermatheca</div>
+    </div>
+    <div class="logo-sub">Repositorio colaborativo de imagen clínica dermatológica</div>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro">
+    <p>Esta es una <strong>demo interactiva</strong> del prototipo DERMATHECA. Explora la plataforma navegando por la pantalla principal o simula el proceso de incorporación de un nuevo usuario.</p>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-row">
+
+    <!-- Card: Plataforma principal -->
+    <a class="demo-card primary" href="dermatheca.html">
+      <div class="card-icon-wrap teal">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4CCFBE" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+      </div>
+      <div class="card-label teal">Pantalla principal</div>
+      <div class="card-title">Plataforma DERMATHECA</div>
+      <div class="card-desc">Accede al panel de control con casos clínicos, analíticas, validación experta y explorador del repositorio.</div>
+      <div class="card-features">
+        <div class="card-feat">
+          <div class="feat-dot teal"></div>
+          Dashboard con estadísticas del repositorio
+        </div>
+        <div class="card-feat">
+          <div class="feat-dot teal"></div>
+          Explorador de casos y validación experta
+        </div>
+        <div class="card-feat">
+          <div class="feat-dot teal"></div>
+          Subida de casos clínicos anonimizados
+        </div>
+        <div class="card-feat">
+          <div class="feat-dot teal"></div>
+          Analíticas y exportación de datos
+        </div>
+      </div>
+      <div class="card-cta">
+        <span class="cta-text teal">Ver plataforma</span>
+        <div class="cta-arrow teal">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- Divider -->
+    <div class="or-divider">o</div>
+
+    <!-- Card: Inicio de sesión -->
+    <a class="demo-card" href="dermatheca-onboarding.html">
+      <div class="card-icon-wrap slate">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--mist)" stroke-width="2">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <polyline points="10 17 15 12 10 7"/>
+          <line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+      </div>
+      <div class="card-label slate">Acceso de usuario</div>
+      <div class="card-title">Inicio de sesión</div>
+      <div class="card-desc">Simula el flujo de incorporación de un profesional sanitario: registro, verificación de credenciales y configuración de perfil.</div>
+      <div class="card-features">
+        <div class="card-feat">
+          <div class="feat-dot slate"></div>
+          Registro con verificación de colegiación
+        </div>
+        <div class="card-feat">
+          <div class="feat-dot slate"></div>
+          Configuración de perfil e institución
+        </div>
+        <div class="card-feat">
+          <div class="feat-dot slate"></div>
+          Consentimiento y normativa RGPD
+        </div>
+        <div class="card-feat">
+          <div class="feat-dot slate"></div>
+          Solicitud de rol experto verificado
+        </div>
+      </div>
+      <div class="card-cta">
+        <span class="cta-text slate">Ver flujo de acceso</span>
+        <div class="cta-arrow slate">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-tags">
+      <span class="footer-tag">Prototipo HTML estático</span>
+      <span class="footer-tag">Sin backend real</span>
+      <span class="footer-tag">Solo para evaluación</span>
+    </div>
+    <div class="footer-text" style="margin-top:14px;">
+      DERMATHECA · Repositorio colaborativo de imagen clínica dermatológica
+    </div>
+  </div>
+
+</div>
+
 </body>
 </html>
